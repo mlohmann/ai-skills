@@ -1,0 +1,15 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+secrets.*
+
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Generated output
+dist/
+coverage/
+*.log

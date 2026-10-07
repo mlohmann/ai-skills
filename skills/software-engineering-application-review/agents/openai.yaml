@@ -1,0 +1,4 @@
+interface:
+  display_name: "Software Engineering Application Review"
+  short_description: "Evidence-first software application review"
+  default_prompt: "Review my resume against a software engineering job description, audit the evidence before rewriting, and guide me through the application workflow."
