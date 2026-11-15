@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "name": "Starter job sources",
+  "sources": [
+    {
+      "name": "Indeed",
+      "url": "https://www.indeed.com/",
+      "kind": "aggregator",
+      "enabled": true,
+      "notes": "General discovery. Use the local country site when appropriate; login or browser access may be needed."
+    },
+    {
+      "name": "LinkedIn Jobs",
+      "url": "https://www.linkedin.com/jobs/",
+      "kind": "aggregator",
+      "enabled": true,
+      "notes": "General discovery. May require the user’s signed-in browser or a connected tool."
+    },
+    {
+      "name": "Idealist",
+      "url": "https://www.idealist.org/en/jobs",
+      "kind": "board",
+      "enabled": false,
+      "notes": "Optional social-impact and nonprofit source. Enable if relevant."
+    },
+    {
+      "name": "We Work Remotely",
+      "url": "https://weworkremotely.com/",
+      "kind": "board",
+      "enabled": false,
+      "notes": "Optional remote-work source. Remote does not establish country/state eligibility."
+    }
+  ]
+}
