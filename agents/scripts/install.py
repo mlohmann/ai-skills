@@ -3,6 +3,7 @@
 import argparse
 from pathlib import Path
 import shutil
+import sys
 import tempfile
 from package import SKILL_FILES
 
@@ -10,6 +11,8 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def install(host, skills_dir=None):
+    if sys.version_info < (3, 11):
+        raise ValueError("Use a supported Python release, version 3.11 or newer")
     if host not in ("claude-code", "codex"):
         raise ValueError("Host must be claude-code or codex")
     parent = (
@@ -19,6 +22,8 @@ def install(host, skills_dir=None):
         / {"claude-code": ".claude/skills", "codex": ".agents/skills"}[host]
     )
     source = ROOT / "skills/job-search-jev"
+    if source.is_symlink() or not source.resolve().is_relative_to(ROOT.resolve()):
+        raise ValueError("Skill root escapes the repository; refusing installation")
     target = parent / source.name
     if target.exists() or target.is_symlink():
         raise ValueError(
@@ -26,7 +31,9 @@ def install(host, skills_dir=None):
         )
     files = [source / name for name in SKILL_FILES]
     if any(
-        p.is_symlink() or not p.resolve().is_relative_to(source.resolve())
+        not p.is_file()
+        or p.is_symlink()
+        or not p.resolve().is_relative_to(source.resolve())
         for p in files
     ):
         raise ValueError("Skill contains an unsafe package path; refusing installation")

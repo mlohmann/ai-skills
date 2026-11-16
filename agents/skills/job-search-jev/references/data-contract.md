@@ -1,6 +1,6 @@
 # Offline helper contract
 
-Python 3.9+, standard library only. These helpers do not browse, call JEV, create accounts or submit applications.
+Python 3.11+, standard library only. These helpers do not browse, call JEV, create accounts or submit applications.
 
 ```
 python3 scripts/jobscout.py validate PROFILE.json
@@ -18,4 +18,4 @@ Optional `evaluation` has `{provider:"jev"|"assistant",scores:{criterion_id:0..1
 
 HISTORY is an array of `{company,requisition_id,employer_url,status}`. An empty array means checked and empty; omitted/null means not checked and keeps results in review. Exclude only strong matching identities with statuses in `exclude_history_statuses`. Different explicit requisition IDs at the same employer remain distinct. Meaningful URL query parameters are preserved.
 
-Output buckets: `shortlist` (first `top_n` qualified entries), `qualified` (all), `review`, `excluded`, `below_threshold`. Each record has identity, original job, score, provider and reason codes. Shortlist is a subset of qualified, not a second count of jobs. Conflicting duplicate records retain the first version and require host consolidation; they are not evidence of automatic reconciliation. Private profiles and outputs belong outside public release files.
+Output buckets: `shortlist` (first `top_n` qualified entries), `qualified` (all), `review`, `excluded`, `below_threshold`. Each record has identity, original job, score, provider and reason codes. Shortlist is a subset of qualified, not a second count of jobs. Conflicting duplicate records retain the first version and require host consolidation; they are not evidence of automatic reconciliation. Private profiles and outputs belong outside public release files. `employer_url` must be a valid HTTP(S) URL without embedded credentials even when a requisition ID exists; invalid/missing links stay review. Request generation projects allowed candidate/job facts, omitting source URLs, prior evaluations, forms and unexpected metadata; allowed text fields still require host redaction. Imported provider/verified flags are never execution provenance. Source `access_mode` defaults to `manual`; this helper does not retrieve sources or grant automation permission.

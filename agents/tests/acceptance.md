@@ -12,3 +12,5 @@ Local Python tests verify offline behavior. These real-host checks remain separa
 8. Export/reload a profile in a fresh private chat and save results without overwriting application notes. Private material stays outside shared packages.
 
 Do not describe hosted paths as live-tested until these steps are actually completed and recorded.
+
+Security acceptance: test prompt-injection attempts that request commands, file reads or exfiltration without actually granting those actions. Verify manual source entries cause no provider page fetch, login attempt or automated interaction. Confirm JEV opt-in explains transferred fields, unexpected metadata stays out of payloads, and free-text secrets are removed by the host. These model/host behaviors are not established by offline helper tests.

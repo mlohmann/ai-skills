@@ -2,6 +2,10 @@
 
 from pathlib import Path
 import hashlib
+import io
+import json
+import os
+import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,6 +22,7 @@ SKILL_FILES = [
     "references/data-contract.md",
     "references/extraction.md",
     "references/sources.md",
+    "references/privacy.md",
     "scripts/evidence.py",
     "scripts/jobscout.py",
 ]
@@ -41,13 +46,97 @@ PUBLIC_FILES = [
     "tests/test_release.py",
     "tests/acceptance.md",
     "RELEASE_REVIEW.md",
+    "SECURITY.md",
+    "PRIVACY.md",
+    "SECURITY_REVIEW.md",
+    "tests/test_security.py",
 ] + [SKILL_PREFIX + p for p in SKILL_FILES]
+
+
+def atomic_write(path, data):
+    """Replace the directory entry instead of following an existing hard link."""
+    if path.is_symlink():
+        raise ValueError("Refusing a symbolic-link output destination")
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            dir=path.parent, prefix=".jobscout-", delete=False
+        ) as output:
+            temporary = Path(output.name)
+            output.write(data)
+        os.replace(temporary, path)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+
+
+def validate_public_profile():
+    template = ROOT / "skills/job-search-jev/assets/profile.template.json"
+    if template.is_symlink() or not template.resolve().is_relative_to(ROOT.resolve()):
+        raise ValueError("Unsafe public profile template")
+    profile = json.loads(template.read_text(encoding="utf-8"))
+    empty_lists = (
+        "target_roles",
+        "seniority",
+        "locations",
+        "work_models",
+        "excluded_companies",
+        "candidate_evidence",
+        "sources",
+        "preferences",
+    )
+    allowed = set(empty_lists) | {
+        "version",
+        "salary",
+        "exclude_history_statuses",
+        "criteria",
+        "top_n",
+        "min_fit",
+        "min_confidence",
+        "jev",
+        "max_age_days",
+        "eligibility",
+    }
+    if (
+        not isinstance(profile, dict)
+        or set(profile) != allowed
+        or any(profile.get(k) != [] for k in empty_lists)
+    ):
+        raise ValueError(
+            "Public profile must be blank; save personal profiles outside the repository"
+        )
+    if profile.get("eligibility") != {
+        "residence": None,
+        "authorized_countries": [],
+        "requires_sponsorship": None,
+    }:
+        raise ValueError("Public profile contains personal eligibility settings")
+    salary = profile.get("salary")
+    if (
+        not isinstance(salary, dict)
+        or set(salary) != {"minimum", "currency", "period", "gate", "missing"}
+        or salary["minimum"] is not None
+        or salary["currency"] is not None
+    ):
+        raise ValueError("Public salary template must be unconfigured")
+    if not isinstance(profile.get("criteria"), list) or any(
+        not isinstance(c, dict) or set(c) != {"id", "description", "weight"}
+        for c in profile["criteria"]
+    ):
+        raise ValueError("Unexpected public criterion metadata")
+    if (
+        not isinstance(profile.get("jev"), dict)
+        or profile["jev"].get("enabled") is not False
+        or profile["jev"].get("required") is not False
+    ):
+        raise ValueError("Public template must leave JEV disabled")
 
 
 def pack(path, entries):
     if path.is_symlink():
         raise ValueError("Refusing a symbolic-link archive destination")
-    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as archive:
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
         for relative, archive_name in entries:
             source = ROOT / relative
             if source.is_symlink() or not source.resolve().is_relative_to(
@@ -60,9 +149,11 @@ def pack(path, entries):
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, data)
+    atomic_write(path, buffer.getvalue())
 
 
 def build(dist=None):
+    validate_public_profile()
     guide_parts = [
         "skills/job-search-jev/SKILL.md",
         "skills/job-search-jev/assets/profile-form.md",
@@ -71,6 +162,7 @@ def build(dist=None):
         "skills/job-search-jev/references/data-contract.md",
         "skills/job-search-jev/references/jev.md",
         "skills/job-search-jev/references/extraction.md",
+        "skills/job-search-jev/references/privacy.md",
         "skills/job-search-jev/assets/profile.template.json",
         "skills/job-search-jev/assets/sources.blank.json",
         "skills/job-search-jev/assets/sources.starter.json",
@@ -99,7 +191,7 @@ def build(dist=None):
     guide = ROOT / "chatgpt/jobscout-guide.md"
     if guide.is_symlink() or not guide.resolve().is_relative_to(ROOT.resolve()):
         raise ValueError("Unsafe guide destination")
-    guide.write_text("\n".join(parts), encoding="utf-8")
+    atomic_write(guide, "\n".join(parts).encode("utf-8"))
     if dist is None and not (ROOT / "releases/0.2.0").resolve().is_relative_to(
         ROOT.resolve()
     ):
@@ -139,7 +231,7 @@ def build(dist=None):
         hashlib.sha256((dist / name).read_bytes()).hexdigest() + "  " + name + "\n"
         for name in sorted(packages)
     )
-    (dist / "SHA256SUMS").write_text(checksums, encoding="utf-8")
+    atomic_write(dist / "SHA256SUMS", checksums.encode("utf-8"))
     return list(packages)
 
 

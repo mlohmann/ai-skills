@@ -7,28 +7,32 @@
       "url": "https://www.indeed.com/",
       "kind": "aggregator",
       "enabled": true,
-      "notes": "General discovery. Use the local country site when appropriate; login or browser access may be needed."
+      "notes": "Manual discovery link. No automated access unless Indeed expressly permits the specific method. Prefer the original employer posting supplied by the user.",
+      "access_mode": "manual"
     },
     {
       "name": "LinkedIn Jobs",
       "url": "https://www.linkedin.com/jobs/",
       "kind": "aggregator",
       "enabled": true,
-      "notes": "General discovery. May require the user’s signed-in browser or a connected tool."
+      "notes": "Manual discovery link. Do not automate its website or signed-in browser; use only a separately permitted integration/method or user-supplied employer links.",
+      "access_mode": "manual"
     },
     {
       "name": "Idealist",
       "url": "https://www.idealist.org/en/jobs",
       "kind": "board",
       "enabled": false,
-      "notes": "Optional social-impact and nonprofit source. Enable if relevant."
+      "notes": "Optional social-impact and nonprofit source. Enable if relevant. Manual by default; check terms and permitted methods before automated use.",
+      "access_mode": "manual"
     },
     {
       "name": "We Work Remotely",
       "url": "https://weworkremotely.com/",
       "kind": "board",
       "enabled": false,
-      "notes": "Optional remote-work source. Remote does not establish country/state eligibility."
+      "notes": "Optional remote-work source. Remote does not establish country/state eligibility. Manual by default; check terms and permitted methods before automated use.",
+      "access_mode": "manual"
     }
   ]
 }

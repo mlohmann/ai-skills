@@ -4,7 +4,7 @@ Offline only. Fetching and JEV execution belong to host tools. No inferred field
 """
 
 import argparse, hashlib, json, re
-from jobscout import num, validate
+from jobscout import num, validate, evaluation_profile
 from html import unescape
 from html.parser import HTMLParser
 
@@ -119,7 +119,19 @@ def collect(source):
         )
     ]
     return {
-        "source": {k: v for k, v in source.items() if k != "text"},
+        "source": {
+            k: source[k]
+            for k in (
+                "url",
+                "company",
+                "requisition_id",
+                "title",
+                "location",
+                "captured_at",
+                "verified_at",
+            )
+            if isinstance(source.get(k), str)
+        },
         "sha256": hashlib.sha256(body.encode()).hexdigest(),
         "text": body,
         "salary_candidates": spans,
@@ -132,6 +144,39 @@ def extraction_request(e, profile):
     validate(profile)
     if not profile["jev"].get("enabled", True):
         raise ValueError("JEV is disabled")
+    if (
+        not isinstance(e, dict)
+        or not isinstance(e.get("text"), str)
+        or not isinstance(e.get("salary_candidates"), list)
+    ):
+        raise ValueError("Invalid collected evidence")
+    if ("sha256" in e and not isinstance(e["sha256"], str)) or (
+        "overflow" in e and not isinstance(e["overflow"], bool)
+    ):
+        raise ValueError("Invalid evidence metadata")
+    if not isinstance(e.get("location_spans", []), list) or any(
+        not isinstance(v, str) for v in e.get("location_spans", [])
+    ):
+        raise ValueError("Location evidence must be strings")
+    for candidate in e["salary_candidates"][:8]:
+        if (
+            not isinstance(candidate, dict)
+            or any(
+                not isinstance(candidate.get(k), str)
+                for k in ("id", "excerpt", "range_text")
+            )
+            or any(not num(candidate.get(k), 0, 1e12) for k in ("min", "max", "offset"))
+        ):
+            raise ValueError("Invalid salary evidence")
+        if candidate.get("currency") is not None and (
+            not isinstance(candidate["currency"], str)
+            or not re.fullmatch("[A-Z]{3}", candidate["currency"])
+        ):
+            raise ValueError("Invalid evidence currency")
+        if "currency_conflict" in candidate and not isinstance(
+            candidate["currency_conflict"], bool
+        ):
+            raise ValueError("Invalid evidence currency conflict")
     options = {
         c["id"]: "Applicable base-pay evidence for the supplied profile: "
         + c["excerpt"]
@@ -140,8 +185,9 @@ def extraction_request(e, profile):
     options["unknown"] = (
         "No applicable base-pay candidate; currency, period, geography or pay type ambiguous"
     )
+    context = evaluation_profile(profile)
     target = {
-        k: profile.get(k)
+        k: context.get(k)
         for k in (
             "target_roles",
             "seniority",
@@ -156,9 +202,26 @@ def extraction_request(e, profile):
         "ineligible": "Evidence explicitly contradicts the supplied profile",
         "unknown": "Insufficient or conflicting evidence",
     }
+    listing = {
+        k: e[k] for k in ("text", "sha256", "location_spans", "overflow") if k in e
+    }
+    candidate_fields = (
+        "id",
+        "min",
+        "max",
+        "currency",
+        "currency_conflict",
+        "range_text",
+        "excerpt",
+        "offset",
+    )
+    listing["salary_candidates"] = [
+        {k: c[k] for k in candidate_fields if k in c}
+        for c in e["salary_candidates"][:8]
+    ]
     return {
         "model": profile["jev"]["model"],
-        "state": {"listing": e, "target": target},
+        "state": {"listing": listing, "target": target},
         "questions": {
             "salary_evidence": {
                 "type": "choice",
