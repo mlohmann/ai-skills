@@ -2,6 +2,7 @@ import copy
 from datetime import date
 import hashlib
 import json
+import re
 from pathlib import Path
 import shutil
 import secrets
@@ -325,6 +326,37 @@ class ReleaseTests(unittest.TestCase):
             (Path(tmp) / "job-search-jev").symlink_to(Path(tmp) / "missing")
             with self.assertRaises(ValueError):
                 install.install("codex", tmp)
+
+    def test_project_guide_navigation_and_reference_links(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            package.build(tmp)
+        guide = (ROOT / "chatgpt/jobscout-guide.md").read_text(encoding="utf-8")
+        headings = re.findall(r"^#{1,6} (.+)$", guide, flags=re.MULTILINE)
+        anchors = {
+            re.sub(r"[^\w\s-]", "", heading.lower()).replace(" ", "-")
+            for heading in headings
+        }
+        for target in re.findall(r"\]\(([^\s)]+)\)", guide):
+            if target.startswith("#"):
+                self.assertIn(target[1:], anchors)
+            elif not target.startswith(("https://", "http://")):
+                self.assertTrue(
+                    (ROOT / "chatgpt" / target.split("#")[0]).exists(), target
+                )
+        self.assertIn(
+            "https://github.com/mlohmann/ai-skills/blob/main/agents/skills/job-search-jev/assets/profile.template.json",
+            guide,
+        )
+
+        for name in (
+            "profile.template.json",
+            "sources.blank.json",
+            "sources.starter.json",
+        ):
+            template = (ROOT / "skills/job-search-jev/assets" / name).read_text(
+                encoding="utf-8"
+            )
+            self.assertIn("```json\n" + template + "```", guide)
 
     def test_reproducible_archives_checksums_and_layouts(self):
         with tempfile.TemporaryDirectory() as tmp:

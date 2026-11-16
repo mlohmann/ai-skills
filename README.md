@@ -25,4 +25,4 @@ Keep credentials, private source material, and user-specific secrets out of the 
 
 ## JobScout
 
-[JobScout](agents/README.md) is a job-search skill for ChatGPT and Claude with a private user profile, configurable job sources, a listings board template and optional JEV evaluation. Start with [the installation guide](agents/INSTALL.md). JobScout is MIT licensed under `agents/LICENSE`.
+[JobScout](agents/README.md) helps you review jobs in ChatGPT and Claude. Create a private profile, choose sources, and save matches in a results board. JEV evaluation is optional. Start with [the installation guide](agents/INSTALL.md). JobScout uses the MIT license in `agents/LICENSE`.

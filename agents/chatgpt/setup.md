@@ -1,24 +1,43 @@
-# ChatGPT setup
+# Set up JobScout in ChatGPT
 
-Start with the one-line agent instruction in [INSTALL.md](../INSTALL.md). There are two supported packaging paths; availability depends on the host/account.
+Choose a plugin installation if your host supports it. You can also use a private Project with instructions and one reference file.
 
-## Skill plugin
+[Plugin setup](#plugin-setup) · [Private Project setup](#private-project-setup) · [Search and JEV](#search-and-jev) · [References](#references)
 
-`releases/0.2.0/jobscout-chatgpt-plugin.zip` contains a portable root `plugin.json` and `skills/`. Use the host's supported local/repository plugin flow. The repository-root catalog `.agents/plugins/marketplace.json` points to `./agents`; the catalog inside `agents/` supports registering that folder directly. No MCP server or JEV account is required. Public-directory distribution is a separate submission/review step, not something a ZIP build performs. Do not assume a universal ChatGPT web ZIP-import button.
+## Plugin setup
 
-## Private Project, without a plugin installer
+Use `releases/0.2.0/jobscout-chatgpt-plugin.zip` with your host's supported plugin installation steps. The ZIP contains a root `plugin.json` and the `skills/` folder.
+
+The repository catalog at `.agents/plugins/marketplace.json` points to `./agents`. The catalog inside `agents/` lets you register that folder directly. This plugin requires no MCP server or JEV account.
+
+A ZIP build does not create a public directory listing. Submission and approval are separate steps. See [the installation guide](../INSTALL.md).
+
+## Private Project setup
 
 1. Create a private Project named JobScout.
-2. Paste `instructions.md` into Project instructions.
-3. Attach `jobscout-guide.md` as a Project file. It is generated from the shared skill, workflow, profile form, source guide and templates, avoiding many separate uploads.
+2. Paste [instructions.md](instructions.md) into Project instructions.
+3. Attach [jobscout-guide.md](jobscout-guide.md) as a Project file.
 4. Say “Configure JobScout. Help me fill out my profile and choose job sources. Leave JEV off.”
-5. Save the resulting profile in your private Project. Add application history only if you want it checked. If you already applied nowhere, explicitly confirm an empty history; otherwise “not checked” is accurate.
+5. Save your completed profile in the private Project.
 
-Search uses the account's available web tools; without them, provide listings to screen. The helper scripts are optional for conversational use. Keep publicly shared packages generic and have each recipient create their own private Project. A shared Project may expose files to its members.
+The guide contains the workflow, profile form, source instructions, and templates. You don't need to upload each reference separately.
 
-JEV is optional and needs the recipient's own authorized connection/tool. A Project or plugin does not create one. Public ChatGPT custom-GPT creation is not the distribution path for this release; account restrictions and migration notices vary.
+Add application history if you want JobScout to check it. Confirm an empty history only if you have checked that there are no records. Otherwise, use “history not checked.”
 
-Official setup references, checked November 15, 2026:
+Share the generic package with others. Each person should create a private Project. Members of a shared Project might be able to read its files.
+
+## Search and JEV
+
+Search uses the tools available to your account. All starter sources are manual links. Automatic retrieval requires permission for the method used. Supply employer listings if browsing is unavailable.
+
+The Python helpers are optional for chat use. JEV is also optional. It requires your own supported connection. A Project or plugin does not create that connection.
+
+This release uses plugin and Project setup paths. It does not depend on creating a custom GPT. Feature access and account migration notices can vary.
+
+## References
+
+These setup references were checked on November 15, 2026:
+
 - [Projects in ChatGPT](https://help.openai.com/en/articles/10169521-projects-in-chatgpt)
 - [Plugin packaging](https://developers.openai.com/plugins/build/plugins)
 - [Skills](https://developers.openai.com/plugins/build/skills)

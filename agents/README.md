@@ -1,48 +1,72 @@
 # JobScout
 
-A configurable job-search skill for ChatGPT and Claude. Bring your own profile, choose job sources, and get an evidence-backed shortlist with an explicit review queue. Any occupation; JEV is optional and off by default.
+Find jobs with a search profile you control. JobScout brings profile setup, job sources, and results to ChatGPT and Claude. You can use it for any occupation. JEV, an optional evaluation service, is off by default.
 
-## Start with one instruction
+[Get started](#get-started) · [Set up your search](#set-up-your-search) · [Downloads](#downloads) · [Build and test](#build-and-test) · [Privacy and security](#privacy-and-security)
 
-Paste this into your AI agent:
+## Get started
+
+Paste this instruction into your AI agent:
 
 > Read https://raw.githubusercontent.com/mlohmann/ai-skills/main/agents/INSTALL.md and install JobScout for this environment. Help me create my private profile and choose a starter source board or my own sources. Leave JEV off unless I opt in.
 
-Claude Code also supports a single shell command (2.1.275+; available after merge):
+For Claude Code 2.1.275 or later, you can also use this command:
 
 ```sh
 claude plugin install jobscout --marketplace mlohmann/ai-skills
 ```
 
-[Installation guide](INSTALL.md) · [ChatGPT](chatgpt/setup.md) · [Claude](claude/setup.md)
+These links and the marketplace command work after the release is merged into the default branch. Your host might require you to upload files or complete other setup steps.
 
-Claude Code and Codex have a local installer. Claude.ai has an uploadable skill ZIP. ChatGPT has a portable skill plugin for supported hosts and a private Project kit. The agent guides any account-specific upload steps; an instruction cannot grant new tools or permissions.
+Choose the guide for your host:
 
-## Make it yours
+- [ChatGPT setup](chatgpt/setup.md)
+- [Claude setup](claude/setup.md)
+- [Installation guide for agents](INSTALL.md)
 
-Fill out your profile in conversation or use [the form](skills/job-search-jev/assets/profile-form.md). Set roles, location/authorization, work model, supported experience, pay rules, exclusions and ranking priorities. No résumé is required. Keep the completed profile private.
+## Set up your search
 
-Start with [the source list](skills/job-search-jev/assets/sources.starter.json), a [blank source board](skills/job-search-jev/assets/sources.blank.json), or your own employer pages, saved searches and specialty boards. The starter includes Indeed and LinkedIn as enabled manual discovery links; optional Idealist and We Work Remotely entries can be enabled when relevant. All starter sources are manual by default. Automated retrieval needs provider permission for the specific method; a login is insufficient. Sources are configurable discovery links, not bundled crawler integrations. Every source can be removed or replaced.
+### Create your profile
 
-Keep results in a private Markdown board or use [the CSV template](skills/job-search-jev/assets/listings-board.csv). The board is a file you control, not a hosted web app.
+Answer questions in chat or fill out [the profile form](skills/job-search-jev/assets/profile-form.md). Set your target roles, location, work authorization, work model, and minimum base pay. Add experience you can support with examples. You don't need a résumé.
 
-Assistant review works without JEV. Opt into JEV for structured evaluation using your own supported connection, with optional fallback or a required-evaluator setting. Both modes apply the same salary, eligibility, freshness, deduplication and application-history rules. Scores never override hard gates. Unknowns remain reviewable; no invented candidate claims or evaluator confidence.
+Keep your completed profile in a private location outside the installed skill and shared repository.
+
+### Choose your sources
+
+Start with [the source list](skills/job-search-jev/assets/sources.starter.json), use [a blank source board](skills/job-search-jev/assets/sources.blank.json), or add your own links.
+
+A source board is a list of places to find jobs. The starter list includes Indeed and LinkedIn. You can also enable entries for Idealist and We Work Remotely. All starter entries are manual links for you to open. Automated retrieval requires the provider's permission for the method you use. Signing in doesn't grant that permission.
+
+### Review your results
+
+JobScout checks your required filters before it ranks fit. It keeps missing or conflicting facts in a review queue. An assistant fit score is a judgment, not a hiring probability.
+
+Save results in a Markdown table or use [the CSV template](skills/job-search-jev/assets/listings-board.csv). This results board is a file you control. Saving a job doesn't submit an application.
+
+### Use JEV if you want to
+
+Assistant review works without JEV. To use JEV, connect your own supported service and choose whether assistant fallback is allowed. The host must explain what data it will send before your first JEV evaluation.
 
 ## Downloads
 
-Version 0.2.0 packages are in [releases/0.2.0](releases/0.2.0/):
+Choose a package in [releases/0.2.0](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.0):
 
-- `jobscout-0.2.0-source.zip`: full public source kit, installation instructions and tests.
-- `jobscout-chatgpt-plugin.zip`: portable Agent Plugin layout.
-- `job-search-jev-claude.zip`: uploadable Claude skill.
-- `jobscout-claude-code-plugin.zip`: Claude Code plugin layout.
-- `SHA256SUMS`: archive integrity checksums.
+| File | Use |
+| --- | --- |
+| `jobscout-0.2.0-source.zip` | Source files, setup guides, templates, and tests |
+| `jobscout-chatgpt-plugin.zip` | Portable Agent Plugin for supported hosts |
+| `job-search-jev-claude.zip` | Skill upload for Claude.ai |
+| `jobscout-claude-code-plugin.zip` | Plugin folder for Claude Code |
+| `SHA256SUMS` | Checksums for the four archives |
 
-The source kit includes `chatgpt/jobscout-guide.md`, a consolidated Project reference. Prebuilt archives are generated from an explicit public-file allowlist; user profiles, run artifacts, local caches, Git history and credentials are excluded.
+The source kit includes `chatgpt/jobscout-guide.md`. Attach this file when you use the Project setup instructions. The build includes only files on its public-file list. Review their contents before you publish; the list doesn't detect every secret in allowed text.
 
-## Verify or rebuild
+## Build and test
 
-Python 3.11+; no third-party Python dependencies.
+Use Python 3.11 or later. The helpers use the Python standard library and modules in this package.
+
+From the cloned repository root, run:
 
 ```sh
 cd agents
@@ -50,12 +74,14 @@ python3 -m unittest discover -s tests -v
 python3 scripts/package.py
 ```
 
-The installer refuses to replace an existing installation. Runtime profiles/results belong in a private workspace outside this repository. No applications, outreach, uploads, account creation or scheduling happen as part of a search.
+If you extracted the source kit, run the last two commands from its `jobscout` folder. The build updates the Project guide, release archives, and checksums.
 
-See [the host acceptance checks](tests/acceptance.md) for remaining verification. A successful local build is not proof of ChatGPT web installation, Claude.ai installation, live source coverage or JEV inference. Public plugin-directory acceptance is separate from this repository release. Source/download URLs are live after the release lands on the default branch.
+The local installer stops if the skill already exists. Review that installation before you update it. Keep generated review reports in the ignored `reports/` folder.
 
-JobScout under `agents/` is MIT licensed: [LICENSE](LICENSE). JEV and host services are separate products with their own terms, access and potential costs. This license does not change the licensing of unrelated repository content.
+## Privacy and security
 
-## Security and privacy
+Read [the privacy guide](PRIVACY.md), [the security policy](SECURITY.md), and [the host acceptance checks](tests/acceptance.md). Local tests do not verify hosted-app installation, live source retrieval, or JEV inference. Platform directory submission is a separate step.
 
-Read [SECURITY.md](SECURITY.md) and [PRIVACY.md](PRIVACY.md) before public rollout. These describe real data flows and review limits; this package makes no GDPR, SOC 2, security-certification or platform-approval claim. The public license applies to JobScout code/instructions, not third-party content or services.
+JEV off does not mean local-only AI processing. ChatGPT, Claude, and connected services use their own data settings and terms. JobScout does not apply for jobs, send messages, upload résumés, create accounts, or schedule searches as part of a scan.
+
+JobScout under `agents/` uses the [MIT license](LICENSE). This license covers JobScout code and instructions. It doesn't grant rights to third-party content, brands, or services, or change the license of unrelated repository content. This package makes no regulatory certification or platform-approval claim.

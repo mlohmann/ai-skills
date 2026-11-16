@@ -1,4 +1,4 @@
-"""Install the public skill locally without replacing an existing installation."""
+"""Install the public skill. Keep an existing installation unchanged."""
 
 import argparse
 from pathlib import Path

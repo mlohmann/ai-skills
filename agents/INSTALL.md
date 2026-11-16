@@ -1,54 +1,108 @@
 # Install JobScout
 
-Give your AI agent this one instruction:
+Use the section for your AI host. The release must be merged into the default branch before the public installation links work.
+
+[Start in chat](#start-in-chat) · [Claude Code](#claude-code) · [Local skill installer](#local-skill-installer) · [Claude.ai](#claudeai) · [ChatGPT](#chatgpt) · [Agent checks](#agent-checks) · [Profile setup](#profile-setup)
+
+## Start in chat
+
+Give your agent this instruction:
 
 > Read https://raw.githubusercontent.com/mlohmann/ai-skills/main/agents/INSTALL.md and install JobScout for this environment. Help me create my private profile and choose a starter source board or my own sources. Leave JEV off unless I opt in.
 
-This is an agent instruction, not a universal shell command. Your host's permissions, installed tools and workspace policies still apply. The files below become available on the default branch when the release is merged.
+Your agent can guide setup. It can't grant new tools, bypass workspace policies, or complete steps that require your account access without authorization.
 
-## Instructions for the installing agent
+## Claude Code
 
-Identify the host before installing. This package needs no JEV account in its default mode. Never import the author's preferences or connect another service automatically. Install only the public JobScout files, not unrelated skills from the repository. Read `skills/job-search-jev/SKILL.md` after installation and run conversational onboarding; do not search until the current user confirms the profile.
-
-### Claude Code: one-command plugin installation
-
-On Claude Code 2.1.275 or later, after this release is merged:
+For Claude Code 2.1.275 or later, run:
 
 ```sh
 claude plugin install jobscout --marketplace mlohmann/ai-skills
 ```
 
-Inside Claude Code, the equivalent is `/plugin install jobscout --marketplace mlohmann/ai-skills`. This registers the repository marketplace and installs JobScout. Ask to configure JobScout in a new chat. If an older client lacks this option, use the local skill installer below or update the client. Avoid installing both the plugin and a duplicate personal skill.
+Inside a Claude Code chat, use `/plugin install jobscout --marketplace mlohmann/ai-skills`. This command adds the repository marketplace and installs JobScout. In a new chat, ask Claude to configure JobScout.
 
-### Local skill installer: Claude Code or Codex
+If your client doesn't support this option, update it or use the local skill installer. Choose one installation method to avoid duplicate skills.
 
-Fetch `https://github.com/mlohmann/ai-skills` into a fresh temporary directory, inspect `agents/scripts/install.py` and `agents/scripts/package.py`, then run one of the following from the cloned repository:
+## Local skill installer
+
+Use this method for Claude Code or Codex. It requires Python 3.11 or later.
+
+1. Download [the repository](https://github.com/mlohmann/ai-skills) into a new temporary folder.
+2. Read `agents/scripts/install.py` and `agents/scripts/package.py` before you run them.
+3. From the repository root, run the command for your host.
+
+For Claude Code, run:
 
 ```sh
 python3 agents/scripts/install.py --host claude-code
+```
+
+For Codex, run:
+
+```sh
 python3 agents/scripts/install.py --host codex
 ```
 
-Run only the command for the current host. Python 3.11+ is required. Claude Code installs under `~/.claude/skills/job-search-jev`; Codex under `~/.agents/skills/job-search-jev`. The installer never replaces an existing skill or writes a profile. If an installation exists, explain that an update needs review and preserve it. Start a new chat to discover the installed skill, then say “Configure JobScout.” The installer's `--skills-dir PATH` supports a user-selected project skill directory.
+If you extracted the source kit, run the same command without the `agents/` prefix from its `jobscout` folder.
 
-Do not run shell commands in a host without terminal support, write to shared locations without authorization, or claim installation succeeded without checking the destination's `SKILL.md`.
+The installer uses these locations:
 
-### Claude.ai
+| Host | Skill folder |
+| --- | --- |
+| Claude Code | `~/.claude/skills/job-search-jev` |
+| Codex | `~/.agents/skills/job-search-jev` |
 
-Use the uploadable [Claude skill ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.0/job-search-jev-claude.zip). Enable code execution/file creation if required by the account, then use Customize > Skills > + > Create skill > Upload a skill. Menu names and availability can vary by account. If you can operate this surface with the user's authorization, complete the upload; otherwise give the user this download and the exact remaining steps. Never call an instruction paste an installed skill. Once enabled, ask Claude to configure JobScout. See `claude/setup.md` for the private Project fallback.
+Use `--skills-dir PATH` to select another skill directory. The installer stops if JobScout already exists. It does not replace that installation or write a profile.
 
-### ChatGPT
+Start a new chat if the skill does not appear. Then ask your agent to configure JobScout.
 
-If the account supports local/repository skill plugins, use [the plugin package](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.0/jobscout-chatgpt-plugin.zip) or the repository catalog `.agents/plugins/marketplace.json`. The root catalog points JobScout at `./agents`. This skill-only plugin has no MCP server or authentication requirement; JEV is a separate optional connection. Follow the host's supported installation flow and disclose any step requiring user interaction. This package is not a public-directory listing until separately submitted and accepted.
+## Claude.ai
 
-Portable fallback: create a private ChatGPT Project, paste `chatgpt/instructions.md` into Project instructions, and attach `chatgpt/jobscout-guide.md` from the source kit. This single guide includes the workflow, onboarding form and starter sources; no plugin import or Python is required. Web search availability controls live discovery. The installing agent can prepare these files, but must say if the user still needs to create the Project or upload them. Ask “Configure JobScout” after adding them. See `chatgpt/setup.md`.
+1. Download [the Claude skill ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.0/job-search-jev-claude.zip).
+2. Enable code execution and file creation if your account requires it.
+3. Open Customize > Skills. Click the + button, then choose Create skill > Upload a skill.
+4. Upload the ZIP file and turn on the skill.
+5. Ask Claude to configure JobScout.
 
-## Finish onboarding
+Menu names and availability depend on your account. If Skills aren't available, use [the Claude Project setup](claude/setup.md).
 
-Let the user answer conversationally or use `skills/job-search-jev/assets/profile-form.md`. Export the private profile separately from public skill files. Offer starter sources, an empty source board, or their own URLs; copy the selected `sources` array into their profile. Offer a private Markdown/CSV listings board. Assistant review is the default; connect JEV only after the user opts in and authenticates independently.
+## ChatGPT
 
-Before calling setup complete, confirm the skill/instructions can be read, the user has a private profile, and the selected source board and evaluator are clear. If live browsing is unavailable, explain that supplied listings can still be screened. Installation does not itself establish live source coverage or JEV connectivity.
+### Plugin setup
 
-## Security and source access
+If your host supports repository or local skill plugins, use [the ChatGPT plugin ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.0/jobscout-chatgpt-plugin.zip) or the repository catalog at `.agents/plugins/marketplace.json`. The catalog points to `./agents`.
 
-Review [SECURITY.md](SECURITY.md) and [PRIVACY.md](PRIVACY.md). All starter sources are manual links, even when enabled. Do not automate LinkedIn/Indeed pages or signed-in sessions; use provider-permitted methods or independently supplied employer links. Keep personal profiles outside installed/shared files. Before optional JEV use, explain the external data transfer and review allowed free-text fields for confidential data. Archive checksums are integrity checks, not publisher signatures.
+Follow your host's supported installation steps. There is no universal ChatGPT web ZIP-import step. This package includes no MCP server. JEV is a separate optional connection. A public directory listing requires its own submission and approval.
+
+### Private Project setup
+
+1. Create a private Project named JobScout.
+2. Paste [the ChatGPT instructions](chatgpt/instructions.md) into Project instructions.
+3. Attach `chatgpt/jobscout-guide.md` from the source kit.
+4. Ask ChatGPT to configure JobScout and leave JEV off.
+
+This setup uses instructions and a reference file. It does not require Python or a plugin installer. Use supplied employer listings if web search is unavailable. See [ChatGPT setup](chatgpt/setup.md) for details.
+
+## Agent checks
+
+Use these checks when you perform installation for a user:
+
+1. Identify the host and its supported installation method.
+2. Install only JobScout files. Do not install unrelated repository skills.
+3. Preserve existing files and follow the user's workspace permissions.
+4. Check the installed `SKILL.md` or Project instructions before you report success.
+5. State which account-specific steps the user must still complete.
+6. Read `skills/job-search-jev/SKILL.md` before profile setup.
+
+Do not run shell commands if the host has no terminal. Do not report an instruction paste as a native skill installation. Do not connect JEV or another service without the user's instruction.
+
+## Profile setup
+
+Use [the profile form](skills/job-search-jev/assets/profile-form.md) or ask for missing information in chat. Keep the completed profile in the user's private destination. Do not copy the author's preferences.
+
+Offer a starter source board, a blank board, or the user's own sources. Copy the selected board's `sources` array into the profile. Offer a Markdown or CSV results board. Confirm the profile before the first search.
+
+All starter sources are manual links. Do not automate LinkedIn or Indeed pages or signed-in sessions. Use only a method that the provider permits. Before optional JEV use, explain the external data transfer and check allowed text for confidential information.
+
+Before you finish, confirm that the user has a private profile and understands the selected sources and evaluator. Read [privacy](PRIVACY.md) and [security](SECURITY.md) for data handling and package limits. Installation alone does not verify live source retrieval or JEV connectivity.
