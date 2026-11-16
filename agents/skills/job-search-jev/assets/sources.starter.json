@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "name": "Starter job sources",
+  "sources": [
+    {
+      "name": "Indeed",
+      "url": "https://www.indeed.com/",
+      "kind": "aggregator",
+      "enabled": true,
+      "notes": "Manual discovery link. No automated access unless Indeed expressly permits the specific method. Prefer the original employer posting supplied by the user.",
+      "access_mode": "manual"
+    },
+    {
+      "name": "LinkedIn Jobs",
+      "url": "https://www.linkedin.com/jobs/",
+      "kind": "aggregator",
+      "enabled": true,
+      "notes": "Manual discovery link. Do not automate its website or signed-in browser; use only a separately permitted integration/method or user-supplied employer links.",
+      "access_mode": "manual"
+    },
+    {
+      "name": "Idealist",
+      "url": "https://www.idealist.org/en/jobs",
+      "kind": "board",
+      "enabled": false,
+      "notes": "Optional social-impact and nonprofit source. Enable if relevant. Manual by default; check terms and permitted methods before automated use.",
+      "access_mode": "manual"
+    },
+    {
+      "name": "We Work Remotely",
+      "url": "https://weworkremotely.com/",
+      "kind": "board",
+      "enabled": false,
+      "notes": "Optional remote-work source. Remote does not establish country/state eligibility. Manual by default; check terms and permitted methods before automated use.",
+      "access_mode": "manual"
+    }
+  ]
+}

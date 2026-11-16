@@ -1,12 +1,43 @@
-# ChatGPT setup
+# Set up JobScout in ChatGPT
 
-Preferred reusable package: the repository root is a skill-only Agent Plugin (`plugin.json` plus `skills/`). Use your account's supported plugin import/marketplace workflow. Connect JEV independently via a compatible app/MCP integration. This is a package, not a published plugin or live service; it provides no MCP server itself.
+Choose a plugin installation if your host supports it. You can also use a private Project with instructions and one reference file.
 
-Portable alternative: create a ChatGPT Project, paste `instructions.md` into project instructions, and attach the profile template, references and helper as needed. Keep your private profile in your private project/conversation, not in publicly shared knowledge. Start: “Configure JobScout for my job search.” Then “Find jobs using my profile and JEV.” Tools must be available to that project/account; a plain prompt doesn't grant connector access. Shared project access may expose project files: distribute the public package, and have recipients create their own private project.
+[Plugin setup](#plugin-setup) · [Private Project setup](#private-project-setup) · [Search and JEV](#search-and-jev) · [References](#references)
 
-For an eligible custom-GPT workspace, paste instructions into the builder, attach the generic reference/template files, enable web search and data analysis where available, and use connected apps for JEV. Check instruction length limits in the builder. New custom GPT creation is currently unavailable on personal accounts according to the linked help article. Do not invent an Actions endpoint; apps and actions cannot be combined in the same GPT. Publishing/import is account dependent and not performed by this repository build.
+## Plugin setup
 
-Official references (checked 2026-10-10):
-- https://developers.openai.com/plugins/build/plugins
-- https://developers.openai.com/plugins/build/skills
-- https://help.openai.com/en/articles/8554397-creating-and-editing-gpts
+Use `releases/0.2.0/jobscout-chatgpt-plugin.zip` with your host's supported plugin installation steps. The ZIP contains a root `plugin.json` and the `skills/` folder.
+
+The repository catalog at `.agents/plugins/marketplace.json` points to `./agents`. The catalog inside `agents/` lets you register that folder directly. This plugin requires no MCP server or JEV account.
+
+A ZIP build does not create a public directory listing. Submission and approval are separate steps. See [the installation guide](../INSTALL.md).
+
+## Private Project setup
+
+1. Create a private Project named JobScout.
+2. Paste [instructions.md](instructions.md) into Project instructions.
+3. Attach [jobscout-guide.md](jobscout-guide.md) as a Project file.
+4. Say “Configure JobScout. Help me fill out my profile and choose job sources. Leave JEV off.”
+5. Save your completed profile in the private Project.
+
+The guide contains the workflow, profile form, source instructions, and templates. You don't need to upload each reference separately.
+
+Add application history if you want JobScout to check it. Confirm an empty history only if you have checked that there are no records. Otherwise, use “history not checked.”
+
+Share the generic package with others. Each person should create a private Project. Members of a shared Project might be able to read its files.
+
+## Search and JEV
+
+Search uses the tools available to your account. All starter sources are manual links. Automatic retrieval requires permission for the method used. Supply employer listings if browsing is unavailable.
+
+The Python helpers are optional for chat use. JEV is also optional. It requires your own supported connection. A Project or plugin does not create that connection.
+
+This release uses plugin and Project setup paths. It does not depend on creating a custom GPT. Feature access and account migration notices can vary.
+
+## References
+
+These setup references were checked on November 15, 2026:
+
+- [Projects in ChatGPT](https://help.openai.com/en/articles/10169521-projects-in-chatgpt)
+- [Plugin packaging](https://developers.openai.com/plugins/build/plugins)
+- [Skills](https://developers.openai.com/plugins/build/skills)

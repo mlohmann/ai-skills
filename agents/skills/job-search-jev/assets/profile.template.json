@@ -6,7 +6,7 @@
   "work_models": [],
   "salary": {
     "minimum": null,
-    "currency": "USD",
+    "currency": null,
     "period": "year",
     "gate": "lower_bound",
     "missing": "review"
@@ -39,9 +39,16 @@
   "min_fit": 70,
   "min_confidence": 0.85,
   "jev": {
-    "required": true,
+    "required": false,
     "model": "jev-latest",
-    "max_evaluations": 25
+    "max_evaluations": 25,
+    "enabled": false
   },
-  "max_age_days": null
+  "max_age_days": null,
+  "eligibility": {
+    "residence": null,
+    "authorized_countries": [],
+    "requires_sponsorship": null
+  },
+  "preferences": []
 }
