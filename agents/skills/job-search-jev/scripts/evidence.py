@@ -73,6 +73,11 @@ def collect(source):
     cut = re.search(r"(?im)^\s*(?:##\s*)?Apply for this job", body)
     body = body[: cut.start()] if cut else body
     for m in RANGE.finditer(body):
+        # Mixed suffixes need source review rather than inferred units.
+        if m.group("low").lower().endswith("k") != m.group("high").lower().endswith(
+            "k"
+        ):
+            continue
         if any(
             "." in m.group(n)
             and not m.group(n).lower().endswith("k")
@@ -250,6 +255,8 @@ def extraction_request(e, profile):
 def resolve(e, response, confidence_floor=0.85):
     if not num(confidence_floor, 0, 1):
         raise ValueError("Invalid confidence floor")
+    if not isinstance(response, dict):
+        raise ValueError("Response must be a normalized answers object")
     answers = response.get("answers", {})
     if not isinstance(answers, dict):
         raise ValueError("Expected normalized answers object")
