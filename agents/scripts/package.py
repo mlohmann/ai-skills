@@ -45,10 +45,8 @@ PUBLIC_FILES = [
     "tests/test_jobscout.py",
     "tests/test_release.py",
     "tests/acceptance.md",
-    "RELEASE_REVIEW.md",
     "SECURITY.md",
     "PRIVACY.md",
-    "SECURITY_REVIEW.md",
     "tests/test_security.py",
 ] + [SKILL_PREFIX + p for p in SKILL_FILES]
 
