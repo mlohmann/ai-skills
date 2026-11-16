@@ -1,12 +1,14 @@
-"""Build public packages from an explicit file allowlist, never runtime profiles."""
+"""Build packages from named public files. Do not include private profiles."""
 
 from pathlib import Path
 import hashlib
 import io
 import json
 import os
+import re
 import tempfile
 import zipfile
+from urllib.parse import urljoin
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_FILES = [
@@ -53,7 +55,7 @@ PUBLIC_FILES = [
 
 
 def atomic_write(path, data):
-    """Replace the directory entry instead of following an existing hard link."""
+    """Replace the output entry. Do not write through an existing hard link."""
     if path.is_symlink():
         raise ValueError("Refusing a symbolic-link output destination")
     temporary = None
@@ -143,7 +145,7 @@ def pack(path, entries):
             ):
                 raise ValueError("Refusing an escaping package path: " + relative)
             data = source.read_bytes()
-            # Stable metadata makes identical releases reproducible.
+            # Use fixed metadata so identical input produces identical archives.
             info = zipfile.ZipInfo(archive_name, (2026, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
@@ -168,13 +170,34 @@ def build(dist=None):
         "skills/job-search-jev/assets/listings-board.csv",
     ]
     parts = [
-        "# JobScout Project guide\n\nThis consolidated reference works with ChatGPT or Claude Project instructions. The section labels are source paths, not separately uploaded files. Follow the embedded workflow; use the helper contracts only if scripts are available.\n"
+        "# JobScout Project guide\n\nUse this reference with ChatGPT or Claude Project instructions. Each section includes the source file content. You do not need to upload those files separately. Use the helper commands only if the scripts and code execution are available.\n\n[Profile form](#your-jobscout-profile) · [Workflow](#jobscout-workflow) · [Source and results boards](#source-boards-and-results-boards) · [Helper reference](#offline-helper-reference) · [JEV](#jev-integration) · [Extraction](#evidence-extraction) · [Privacy](#privacy-and-external-services)\n"
     ]
     for relative in guide_parts:
         source = ROOT / relative
         if source.is_symlink() or not source.resolve().is_relative_to(ROOT.resolve()):
             raise ValueError("Unsafe guide source: " + relative)
         body = source.read_text(encoding="utf-8")
+        if source.suffix == ".md":
+            # Keep one navigation index in the combined guide.
+            body = (
+                "\n".join(
+                    line
+                    for line in body.splitlines()
+                    if not (line.startswith("[") and "](#" in line and " · " in line)
+                )
+                + "\n"
+            )
+            # Resolve source links for readers who have only the combined guide.
+            base_url = (
+                "https://github.com/mlohmann/ai-skills/blob/main/agents/" + relative
+            )
+            body = re.sub(
+                r"(?<=\]\()([^\s)]+)(?=\))",
+                lambda match: match.group(1)
+                if match.group(1).startswith("#")
+                else urljoin(base_url, match.group(1)),
+                body,
+            )
         parts.append(
             "\n---\n\n## "
             + relative
@@ -197,7 +220,7 @@ def build(dist=None):
         raise ValueError("Unsafe release destination")
     dist = Path(dist) if dist else ROOT / "releases/0.2.0"
     dist.mkdir(parents=True, exist_ok=True)
-    # Validate the complete allowlist before writing any release archive.
+    # Check all public files before writing a release archive.
     for relative in PUBLIC_FILES:
         path = ROOT / relative
         if (

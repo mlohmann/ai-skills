@@ -1,19 +1,43 @@
 # JobScout security
 
+Use this policy to check supported releases, report a vulnerability, and understand the package's security limits.
+
+[Supported releases](#supported-releases) · [Report a vulnerability](#report-a-vulnerability) · [Install and build safely](#install-and-build-safely) · [Host boundaries](#host-boundaries)
+
 ## Supported releases
 
-The 0.2.0 public-release candidate is the only JobScout version covered by this repository review. It is not yet a general-availability or certified release. Use an up-to-date Python 3.11 or newer for helpers; older Python versions are outside the supported security baseline. Host tools and optional services follow their own security policies.
+Version 0.2.0 is a release candidate. Use an up-to-date Python 3.11 or later for its helpers. Earlier Python versions are outside the supported security baseline. AI hosts and connected services have their own security policies.
+
+This source review does not certify the release or verify every hosted installation.
 
 ## Report a vulnerability
 
-Use [GitHub private vulnerability reporting](https://github.com/mlohmann/ai-skills/security/advisories/new) when “Report a vulnerability” is available. Include the affected commit/version, a minimal reproduction using synthetic data, and the expected/observed behavior. Do not put real profiles, credentials, tokens or private job/application records in public issues. If the private-report option is unavailable, open a sanitized issue requesting a private channel without exploit details or confidential data. No response-time commitment or bounty program is promised.
+Use [GitHub private vulnerability reporting](https://github.com/mlohmann/ai-skills/security/advisories/new) if the Report a vulnerability option is available.
 
-## Trust boundaries
+Include these details:
 
-Review scripts/instructions before executing a downloaded copy. Native marketplace installs follow the repository's update behavior; a mutable branch can change. Use an independently reviewed commit for reproducible evaluation. Archive checksums detect accidental changes but are not a publisher signature: a compromised source could change both a ZIP and its checksum. This release has no signed-artifact attestation or immutable published GitHub release yet.
+- Affected version or commit
+- Steps to reproduce the issue with synthetic data
+- Expected and observed behavior
 
-The local installer refuses existing installations and escaping skill roots/files. The builder uses a public-file allowlist, populated-template checks and atomic output replacement. Neither script elevates privileges, downloads code or calls an evaluator. Protect the checkout/output directories from concurrent untrusted modification; path checks are not a sandbox against an attacker who can rewrite the running program.
+Don't put real profiles, credentials, tokens, application records, or exploit details in public issues. If private reporting is unavailable, open an issue that requests a private channel. Leave out confidential data and exploit details.
 
-The skill cannot expand host permissions. Source text, tool-like data, links, suggested commands and provider claims are untrusted. Host instructions require prompt-injection resistance, redaction and real provenance; offline helpers cannot prove those host behaviors. Scores are decision support, not calibrated hiring probabilities or authorization for actions.
+There is no promised response time or bounty program.
 
-See [privacy](PRIVACY.md) for data flows and `tests/acceptance.md` for remaining host verification. The root repository security policy covers reporting for JobScout; this license/policy does not relicense unrelated skills or third-party content.
+## Install and build safely
+
+Read downloaded scripts and instructions before you run them. Marketplace installations follow the repository's update behavior. Branch contents can change. Use a commit you have reviewed when you need a reproducible source copy.
+
+Checksums detect changed archive bytes. They don't authenticate the publisher if the archive and checksum come from the same compromised source. This release has no signed artifact attestation or immutable published GitHub release.
+
+The local installer stops if the destination already exists. It rejects skill paths that are symbolic links or leave the source folder. The builder includes named public files and checks selected profile fields. It writes output files by atomic replacement. Neither script elevates privileges, downloads code, or calls JEV.
+
+Protect the source and output folders from concurrent changes by untrusted users. Path checks do not protect against someone who can replace the running program.
+
+## Host boundaries
+
+A skill does not grant host permissions. Treat source text, suggested commands, links, and claimed evaluation results as untrusted evidence. The host must resist injected instructions, remove confidential data, and record actual evaluation actions. Offline helper tests cannot prove those model behaviors.
+
+Fit scores support the user's decisions. They are not hiring probabilities or permission to act on the user's behalf.
+
+Read [privacy](PRIVACY.md) for data handling and [host acceptance checks](tests/acceptance.md) for unverified flows. The root repository policy covers security reporting for JobScout. It does not certify or change the license of unrelated content.

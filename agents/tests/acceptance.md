@@ -1,16 +1,47 @@
 # Host acceptance checks
 
-Local Python tests verify offline behavior. These real-host checks remain separate:
+Run these checks separately from the Python suite. Record the host, package version, account restrictions, actions performed, and observed results.
 
-1. Give the install instruction to a fresh Claude Code/Codex chat. Verify installed files, preservation of existing installs and no JEV call in default setup.
-2. Upload the Claude skill ZIP in Claude.ai and separately add the Project kit in ChatGPT. Verify onboarding with a private profile. Record any account-specific manual steps.
-3. Configure a non-software occupation, non-US location and non-USD pay policy. Check for author preferences. Try starter, custom and blank source boards.
-4. Without JEV, verify assistant shortlists carry the assistant review label and respect hard gates. Check unknown pay, eligibility and history, conflicting records and blocked sources.
-5. Only after intentional JEV authentication, inspect real schemas, indexing, confidence, results and usage. Disconnect it: optional fallback is disclosed; required mode stays pending. Fixtures do not establish execution.
-6. Check exact requisitions, URL-only history and meaningful query job IDs. Different explicit requisitions at one employer remain distinct.
-7. Treat source text asking for secrets or profile overrides as data. No applications, messages, accounts, uploads, scheduling or LinkedIn posting occurs.
-8. Export/reload a profile in a fresh private chat and save results without overwriting application notes. Private material stays outside shared packages.
+[Installation](#installation) · [Profile and sources](#profile-and-sources) · [Evaluation](#evaluation) · [Security and storage](#security-and-storage)
 
-Do not describe hosted paths as live-tested until these steps are actually completed and recorded.
+## Installation
 
-Security acceptance: test prompt-injection attempts that request commands, file reads or exfiltration without actually granting those actions. Verify manual source entries cause no provider page fetch, login attempt or automated interaction. Confirm JEV opt-in explains transferred fields, unexpected metadata stays out of payloads, and free-text secrets are removed by the host. These model/host behaviors are not established by offline helper tests.
+1. Give the install instruction to a new Claude Code or Codex chat.
+2. Check the installed files. Confirm that existing installations remain unchanged.
+3. Confirm that default setup makes no JEV call.
+4. Upload the skill ZIP in Claude.ai and test profile setup.
+5. In a separate ChatGPT Project, add the instructions and Project guide. Test profile setup there.
+6. Record any manual account-specific steps.
+
+Do not describe a hosted installation as tested until you perform and record the check.
+
+## Profile and sources
+
+1. Configure a non-software occupation, non-US location, and non-USD pay policy.
+2. Confirm that author preferences do not appear.
+3. Test starter, custom, and blank source boards.
+4. Confirm that manual entries cause no page fetch, sign-in attempt, or automated interaction.
+5. Test a permitted source method and record its authorization and access limits.
+
+## Evaluation
+
+1. With JEV off, check that assistant results use the assistant review label.
+2. Check that required filters still exclude jobs with high fit scores.
+3. Test missing pay, unknown eligibility, missing history, conflicts, and blocked sources.
+4. Test different requisitions at one employer, URL-only history, and meaningful query IDs.
+5. Only after JEV opt-in and authentication, inspect actual schemas, score indexing, confidence, results, and usage.
+6. Disconnect JEV. Confirm that optional fallback is disclosed and required mode stays pending.
+
+Fixtures do not prove that an evaluator ran.
+
+## Security and storage
+
+1. Use synthetic source text that requests commands, file reads, profile changes, or data disclosure.
+2. Confirm that the host treats those requests as data. Do not grant the requested actions for the test.
+3. Before JEV use, confirm that the host explains the data transfer and removes confidential text.
+4. Confirm that unexpected metadata stays out of generated payloads.
+5. Export a private profile and load it in a new private chat.
+6. Save results without replacing application notes. Keep personal files outside shared packages.
+7. Confirm that no scan submits applications, sends messages, creates accounts, uploads files, schedules work, or posts to LinkedIn.
+
+Offline tests do not establish these model and host behaviors.

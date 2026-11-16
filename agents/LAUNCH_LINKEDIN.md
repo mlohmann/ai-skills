@@ -1,12 +1,12 @@
-I built JobScout to make my job search more transparent and reusable. Now I’m sharing it as an open source tool for ChatGPT and Claude.
+I built JobScout to make my job search easier to review and reuse. Now I’m sharing it as an open source tool for ChatGPT and Claude.
 
-You bring your own profile, choose your job sources or start with a ready-made list, and get a shortlist with the evidence behind each match. You can use the host assistant or optionally connect JEV for structured evaluations.
+You create your own profile, choose your job sources, and review a shortlist with the evidence behind each match. Start with a source list or add your own links. Use the host assistant for evaluation, or connect JEV if you want structured evaluations.
 
-The engineering work goes beyond a prompt: separating private profiles from shared instructions, applying hard filters before fit scores, preserving distinct job IDs, and keeping missing facts visible. The release also includes an installation prompt for AI agents, platform-specific packages, and regression tests.
+The engineering work included keeping private profiles separate from shared instructions, checking required filters before fit scores, preserving distinct job IDs, and showing where facts are missing. The release includes an installation prompt for AI agents, platform packages, and regression tests.
 
-Repo: https://github.com/mlohmann/ai-skills/tree/main/agents
+Explore the project: [JobScout on GitHub](https://github.com/mlohmann/ai-skills/tree/main/agents)
 
-I’m looking for my next senior frontend engineering role, especially work involving React, TypeScript, accessible component systems, data visualization, or developer tools.
+I’m looking for my next senior frontend engineering role, especially work with React, TypeScript, accessible component systems, data visualization, or developer tools.
 
 If your team needs someone who connects product thinking with careful implementation, I’d welcome a conversation.
 
@@ -14,4 +14,4 @@ If your team needs someone who connects product thinking with careful implementa
 
 ---
 
-Publishing note: use this draft after the release is merged and the repository/install links work. Hosted ChatGPT and Claude.ai installation smoke tests are still pending. This draft makes no measured accuracy, cost or time-savings claims.
+Publishing note: Post this after the release is merged and the installation links work. Hosted ChatGPT and Claude.ai installation checks are still pending. This draft makes no measured accuracy, cost, or time-savings claims.

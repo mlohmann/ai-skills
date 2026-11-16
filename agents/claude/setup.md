@@ -1,15 +1,63 @@
-# Claude setup
+# Set up JobScout in Claude
 
-Start with the one-line agent instruction in [INSTALL.md](../INSTALL.md).
+Choose the setup method for your account or app. JEV is off by default.
 
-Claude.ai: download `releases/0.2.0/job-search-jev-claude.zip` and upload through Customize > Skills > + > Create skill > Upload a skill, where available. Enable code execution/file creation if required. The ZIP contains one `job-search-jev/` folder with `SKILL.md` and its supporting files. Turn the skill on, then say “Configure JobScout.” No JEV account is needed.
+[Claude.ai](#claudeai) · [Claude Code](#claude-code) · [Private Project setup](#private-project-setup) · [Optional JEV](#optional-jev) · [References](#references)
 
-If custom Skills are unavailable, create a private Project, paste `project-instructions.md` into instructions, and attach `chatgpt/jobscout-guide.md` from the source kit. It works as shared reference material for either host. This is the instruction-based fallback, not an installed skill. Search depends on the account's tools.
+## Claude.ai
 
-Claude Code (2.1.275+): install with `claude plugin install jobscout --marketplace mlohmann/ai-skills` after the release is merged. This uses the repository-root `.claude-plugin/marketplace.json` entry pointing to `./agents`. Ask to configure JobScout in a new chat. As a standalone skill alternative, run `python3 agents/scripts/install.py --host claude-code` from the cloned repository. It installs only JobScout into `~/.claude/skills/job-search-jev` and refuses to replace existing files. Restart the chat if needed and ask to configure JobScout. For plugin development/testing, unzip `jobscout-claude-code-plugin.zip` to a dedicated folder and run `claude --plugin-dir /path/to/jobscout`; a normal persistent plugin install follows Claude Code's marketplace flow. The plugin manifest is `.claude-plugin/plugin.json`; `skills/` stays at the package root.
+1. Download `releases/0.2.0/job-search-jev-claude.zip` from [the release folder](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.0).
+2. Enable code execution and file creation if your account requires it.
+3. Open Customize > Skills. Click the + button, then choose Create skill > Upload a skill.
+4. Upload the ZIP file and turn on the skill.
+5. Say “Configure JobScout.”
 
-If you choose JEV, connect your own provider through the host's supported integration and verify available tools. This package supplies no server URL, credentials or access to the author's accounts. Never paste credentials into skill files.
+The ZIP contains one `job-search-jev/` folder with `SKILL.md` and its supporting files. Feature access and menu names can vary. Use a private Project if custom Skills aren't available.
 
-Official references, checked November 15, 2026:
+## Claude Code
+
+For Claude Code 2.1.275 or later, run this command after the release is merged:
+
+```sh
+claude plugin install jobscout --marketplace mlohmann/ai-skills
+```
+
+The repository catalog at `.claude-plugin/marketplace.json` points to `./agents`. In a new chat, ask Claude to configure JobScout.
+
+To install a standalone skill instead, run this command from the cloned repository root:
+
+```sh
+python3 agents/scripts/install.py --host claude-code
+```
+
+The installer uses `~/.claude/skills/job-search-jev`. It stops if the skill already exists. Avoid installing both the plugin and the standalone skill.
+
+For local plugin development, extract `jobscout-claude-code-plugin.zip` into a separate folder. Then run:
+
+```sh
+claude --plugin-dir /path/to/jobscout
+```
+
+This loads the folder for that session. Use the marketplace installation method for a persistent plugin installation. Keep `.claude-plugin/plugin.json` and `skills/` in their packaged locations.
+
+## Private Project setup
+
+1. Create a private Project.
+2. Paste [project-instructions.md](project-instructions.md) into Project instructions.
+3. Attach `chatgpt/jobscout-guide.md` from the source kit.
+4. Ask Claude to configure JobScout.
+
+This method uses shared reference material. It does not install a native skill. Search uses the tools available to your account.
+
+## Optional JEV
+
+To use JEV, connect your own provider through a supported integration. Check which tools are available before you evaluate a listing. The package supplies no server URL, credentials, or access to the author's accounts. Keep credentials out of skill files.
+
+See [the installation guide](../INSTALL.md) for profile setup and source permissions.
+
+## References
+
+These references were checked on November 15, 2026:
+
 - [Use skills in Claude](https://support.claude.com/en/articles/12512180-use-skills-in-claude)
 - [Claude Code plugin manifest](https://code.claude.com/docs/en/plugins-reference)

@@ -1,4 +1,4 @@
-"""Offline request generation and deterministic ranking; no inference/network."""
+"""Create JEV requests and rank supplied jobs. Do not make network requests."""
 
 import json, sys, math, re
 from datetime import date
@@ -190,14 +190,14 @@ def same_job(a, b):
         and b.get("requisition_id")
     ):
         return identity(a)[0] == identity(b)[0]
-    # URL-only history can match an ID-bearing listing; distinct IDs stay distinct.
+    # Match URL-only history to listings with IDs. Keep different IDs distinct.
     x, _ = identity({"employer_url": a.get("employer_url")})
     y, weak = identity({"employer_url": b.get("employer_url")})
     return not weak and x == y
 
 
 def evaluation_profile(p):
-    """Keep unexpected private fields out of external evaluation context."""
+    """Include only allowed profile fields in external evaluation context."""
     context = {
         k: p[k]
         for k in (
@@ -261,7 +261,7 @@ def request(p, j):
             }
     if not isinstance(j, dict):
         raise ValueError("Job must be an object")
-    # Public job facts only. URLs, forms, prior evaluations and raw metadata stay local.
+    # Send allowed job facts. Omit URLs, forms, previous results, and metadata.
     job = {
         k: j[k]
         for k in (

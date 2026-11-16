@@ -1,6 +1,6 @@
-"""Collect verbatim candidates, build JEV questions, resolve selected exact values.
+"""Collect pay evidence, create JEV questions, and resolve selected values.
 
-Offline only. Fetching and JEV execution belong to host tools. No inferred fields.
+The host retrieves content and calls JEV. This helper does not infer facts.
 """
 
 import argparse, hashlib, json, re
@@ -40,7 +40,7 @@ def text(raw):
     return unescape(re.sub(r"(?m)^L\d+:\s*", "", raw))
 
 
-# shortcut: English decimal/grouping conventions; inspect other formats at source.
+# shortcut: Parse English number formats. Review the source for other formats.
 MONEY = r"\d{1,3}(?:,\d{3})+(?![\d.,])|\d+(?:\.\d+)?[kK](?!\w)|\d+(?:\.\d+)?(?![\d.,])"
 CURRENCY = r"USD|CAD|AUD|NZD|EUR|GBP|JPY|INR"
 RANGE = re.compile(
@@ -69,11 +69,11 @@ def collect(source):
     body = text(source["text"])
     spans = []
     seen = set()
-    # Exclude application-form compensation questions before extracting evidence.
+    # Remove application-form pay questions before collecting evidence.
     cut = re.search(r"(?im)^\s*(?:##\s*)?Apply for this job", body)
     body = body[: cut.start()] if cut else body
     for m in RANGE.finditer(body):
-        # Mixed suffixes need source review rather than inferred units.
+        # Review mixed suffixes at the source. Do not infer their units.
         if m.group("low").lower().endswith("k") != m.group("high").lower().endswith(
             "k"
         ):

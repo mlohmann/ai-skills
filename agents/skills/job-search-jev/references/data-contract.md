@@ -1,21 +1,102 @@
-# Offline helper contract
+# Offline helper reference
 
-Python 3.11+, standard library only. These helpers do not browse, call JEV, create accounts or submit applications.
+The helpers use Python 3.11 or later. They read supplied data. They do not browse, call JEV, create accounts, or submit applications.
 
-```
+[Commands](#commands) · [Profile](#profile) · [Job records](#job-records) · [Evaluation](#evaluation) · [History](#history) · [Output](#output)
+
+## Commands
+
+Run these commands from the skill folder:
+
+```sh
 python3 scripts/jobscout.py validate PROFILE.json
 python3 scripts/jobscout.py request PROFILE.json JOB.json
 python3 scripts/jobscout.py rank PROFILE.json JOBS.json [HISTORY.json]
 ```
 
-Paths are relative to the skill folder. Commands read UTF-8 JSON and print JSON; invalid inputs fail with exit code 2. `request` is disabled when `jev.enabled` is false. `validate` checks shape and settings, not factual truth or onboarding completeness. A null or omitted `salary.minimum` disables the pay floor.
+`[HISTORY.json]` is optional command notation. Omit the brackets when you supply the file. Commands read UTF-8 JSON and print JSON. Invalid inputs fail with exit code 2. The request command fails when `jev.enabled` is false.
 
-The profile template is the source of field names. Sources may be URL strings or the source objects in `sources.starter.json`. To select a source board, copy its `sources` array to the profile. `eligibility` and `preferences` preserve user constraints for host interpretation; helpers cannot infer them. The host must encode all confirmed must-have failures and unresolved constraints in eligibility gates before ranking.
+## Profile
 
-JOBS is an array of objects with `company`, `requisition_id` or `employer_url`, `title`, `location`, `description` and source excerpts/URLs. The gates `role_eligible`, `seniority_eligible`, `location_eligible`, `work_model_eligible`, `active`, `employer_verified` are true/false/null. Only true establishes a pass. `employer_url` is the canonical employer/ATS posting. Optional `salary` has `{min,max,currency,period,employer_reported}`; values are base pay in the declared period (`year`, `month`, `week`, `hour`). Missing context is not a salary pass. `conflicts` lists unresolved conflicts; `posted_at` is an ISO date or null.
+Use [profile.template.json](../assets/profile.template.json) for field names. Validation checks the data structure and settings. It does not verify facts or confirm that profile setup is complete.
 
-Optional `evaluation` has `{provider:"jev"|"assistant",scores:{criterion_id:0..100},confidence:0..1|null,raw_response:...}`. All positive-weight criteria need finite numeric scores. Assistant evaluations use `confidence:null` and remain explicitly labeled assistant review. They can qualify when JEV is not required; the JEV confidence threshold applies only to JEV evaluations. Providers other than these stay review. Offline code cannot attest that the claimed provider really ran: the host must preserve real execution provenance. Fixtures never establish live execution.
+| Field | Meaning |
+| --- | --- |
+| `salary.minimum` | Minimum base pay. Null or omitted disables this filter. |
+| `sources` | Source objects or URL strings. Copy a source board's `sources` array into this field. |
+| `eligibility`, `preferences` | Constraints for the host to interpret. The helper does not infer them. |
+| `criteria` | Criterion IDs, descriptions, and weights. At least one weight must be positive. |
+| `min_fit`, `top_n` | Fit threshold and maximum shortlist size. |
+| `min_confidence` | Minimum accepted JEV confidence. It does not apply to assistant review. |
+| `jev` | Evaluation mode, model, and host-managed call budget. |
 
-HISTORY is an array of `{company,requisition_id,employer_url,status}`. An empty array means checked and empty; omitted/null means not checked and keeps results in review. Exclude only strong matching identities with statuses in `exclude_history_statuses`. Different explicit requisition IDs at the same employer remain distinct. Meaningful URL query parameters are preserved.
+Source `access_mode` defaults to `manual`, including for URL strings. No profile setting grants permission to automate a provider. The host must establish that permission separately.
 
-Output buckets: `shortlist` (first `top_n` qualified entries), `qualified` (all), `review`, `excluded`, `below_threshold`. Each record has identity, original job, score, provider and reason codes. Shortlist is a subset of qualified, not a second count of jobs. Conflicting duplicate records retain the first version and require host consolidation; they are not evidence of automatic reconciliation. Private profiles and outputs belong outside public release files. `employer_url` must be a valid HTTP(S) URL without embedded credentials even when a requisition ID exists; invalid/missing links stay review. Request generation projects allowed candidate/job facts, omitting source URLs, prior evaluations, forms and unexpected metadata; allowed text fields still require host redaction. Imported provider/verified flags are never execution provenance. Source `access_mode` defaults to `manual`; this helper does not retrieve sources or grant automation permission.
+The host must encode confirmed required-condition failures and missing evidence in job eligibility fields before ranking.
+
+## Job records
+
+`JOBS.json` is an array of objects. A record uses `company`, `requisition_id` or `employer_url`, `title`, `location`, `description`, and source evidence.
+
+These fields use true, false, or null:
+
+```text
+role_eligible
+seniority_eligible
+location_eligible
+work_model_eligible
+active
+employer_verified
+```
+
+Only true establishes a pass. A missing or null required field requires review. False in an eligibility field or `active` confirms an exclusion. An unverified employer requires review.
+
+`employer_url` must identify the employer or ATS posting. It must use HTTP or HTTPS and contain no embedded credentials. An invalid or missing URL requires review even when the record has a requisition ID. The host must still verify the source's authenticity.
+
+Optional fields include:
+
+| Field | Structure |
+| --- | --- |
+| `salary` | `{min,max,currency,period,employer_reported}`. Values are base pay in `year`, `month`, `week`, or `hour` units. |
+| `conflicts` | Unresolved evidence conflicts. |
+| `posted_at` | ISO date or null. |
+
+Missing currency, period, or employer-pay context does not establish a pay-filter pass.
+
+## Evaluation
+
+An evaluation uses this internal structure:
+
+```text
+{provider:"jev"|"assistant",scores:{criterion_id:0..100},confidence:0..1|null,raw_response:...}
+```
+
+This is a data contract, not JEV's native response format. Every positive-weight criterion requires a finite numeric score.
+
+Use `provider:"assistant"` and `confidence:null` for assistant evaluation. These results can qualify if JEV is not required. Label them **assistant review**. JEV results require valid confidence at or above `min_confidence`. Other providers remain in review.
+
+The helper cannot prove that a named provider ran. The host must preserve actual execution evidence. Test fixtures do not establish live execution.
+
+Request generation includes only allowed profile and job facts. It omits source URLs, previous evaluations, forms, and unexpected metadata. The host must still remove confidential information from allowed text fields.
+
+## History
+
+`HISTORY.json` is an array of records with `company`, `requisition_id`, `employer_url`, and `status`.
+
+An empty array means the user checked the history and found no records. Omitted or null history means not checked. Missing history keeps results in review.
+
+Exclude a job only for a strong identity match whose status appears in `exclude_history_statuses`. Different explicit requisition IDs remain distinct. Keep meaningful URL parameters when you compare records.
+
+## Output
+
+| Bucket | Contents |
+| --- | --- |
+| `shortlist` | First `top_n` qualified records. |
+| `qualified` | All records that pass the required checks and `min_fit`. |
+| `review` | Records with unresolved evidence or evaluation conditions. |
+| `excluded` | Records with a confirmed exclusion. |
+| `below_threshold` | Records that pass the required checks but fail `min_fit`. |
+
+Each record contains identity, the original job, score, provider, and reason codes. The shortlist is a subset of qualified results. Do not count it twice.
+
+For conflicting duplicates, the helper keeps the first record and requests consolidation. The host must resolve the conflict. Save profiles, history, and outputs outside public release files.
