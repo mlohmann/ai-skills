@@ -22,3 +22,7 @@ evals/        Small, repeatable checks for skills or agents
 4. Add a focused evaluation case before relying on a skill for consequential work.
 
 Keep credentials, private source material, and user-specific secrets out of the repository. Use local environment configuration for those values.
+
+## JobScout
+
+[JobScout](agents/README.md) helps you review jobs in ChatGPT and Claude. Create a private profile, choose sources, and save matches in a results board. JEV evaluation is optional. Start with [the installation guide](agents/INSTALL.md). JobScout uses the MIT license in `agents/LICENSE`.
