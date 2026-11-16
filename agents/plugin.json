@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "jobscout",
+  "version": "0.2.0",
+  "description": "Find and verify jobs using your own profile and source board, with optional JEV evaluation",
+  "license": "MIT",
+  "author": {
+    "name": "Matthew Lohmann"
+  },
+  "repository": "https://github.com/mlohmann/ai-skills"
+}
