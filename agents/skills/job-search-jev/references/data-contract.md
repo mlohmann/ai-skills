@@ -8,7 +8,7 @@ python3 scripts/jobscout.py request PROFILE.json JOB.json
 python3 scripts/jobscout.py rank PROFILE.json JOBS.json [HISTORY.json]
 ```
 
-Paths are relative to the skill folder. Commands print JSON; invalid inputs fail with exit code 2. `request` is disabled when `jev.enabled` is false. `validate` checks shape and settings, not factual truth or onboarding completeness.
+Paths are relative to the skill folder. Commands read UTF-8 JSON and print JSON; invalid inputs fail with exit code 2. `request` is disabled when `jev.enabled` is false. `validate` checks shape and settings, not factual truth or onboarding completeness. A null or omitted `salary.minimum` disables the pay floor.
 
 The profile template is the source of field names. Sources may be URL strings or the source objects in `sources.starter.json`. To select a source board, copy its `sources` array to the profile. `eligibility` and `preferences` preserve user constraints for host interpretation; helpers cannot infer them. The host must encode all confirmed must-have failures and unresolved constraints in eligibility gates before ranking.
 

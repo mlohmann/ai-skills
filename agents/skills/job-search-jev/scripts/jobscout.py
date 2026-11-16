@@ -178,6 +178,12 @@ def identity(j):
 
 def same_job(a, b):
     if (
+        a.get("requisition_id")
+        and b.get("requisition_id")
+        and norm(a["requisition_id"]) != norm(b["requisition_id"])
+    ):
+        return False
+    if (
         a.get("company")
         and a.get("requisition_id")
         and b.get("company")
@@ -376,7 +382,7 @@ def rank(p, jobs, history=None, today=None):
         if identity({"employer_url": j.get("employer_url")})[1]:
             review.append("employer_url_invalid_or_missing")
         s = p["salary"]
-        if s["minimum"] is not None:
+        if s.get("minimum") is not None:
             pay = j.get("salary") or {}
             if not isinstance(pay, dict):
                 pay = {}
@@ -463,7 +469,7 @@ def rank(p, jobs, history=None, today=None):
 if __name__ == "__main__":
     try:
         mode = sys.argv[1]
-        args = [json.load(open(x)) for x in sys.argv[2:]]
+        args = [json.load(open(x, encoding="utf-8")) for x in sys.argv[2:]]
         if mode == "validate" and len(args) == 1:
             validate(args[0])
             out = {"valid": True}

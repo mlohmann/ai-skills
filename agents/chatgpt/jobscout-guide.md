@@ -142,7 +142,7 @@ python3 scripts/jobscout.py request PROFILE.json JOB.json
 python3 scripts/jobscout.py rank PROFILE.json JOBS.json [HISTORY.json]
 ```
 
-Paths are relative to the skill folder. Commands print JSON; invalid inputs fail with exit code 2. `request` is disabled when `jev.enabled` is false. `validate` checks shape and settings, not factual truth or onboarding completeness.
+Paths are relative to the skill folder. Commands read UTF-8 JSON and print JSON; invalid inputs fail with exit code 2. `request` is disabled when `jev.enabled` is false. `validate` checks shape and settings, not factual truth or onboarding completeness. A null or omitted `salary.minimum` disables the pay floor.
 
 The profile template is the source of field names. Sources may be URL strings or the source objects in `sources.starter.json`. To select a source board, copy its `sources` array to the profile. `eligibility` and `preferences` preserve user constraints for host interpretation; helpers cannot infer them. The host must encode all confirmed must-have failures and unresolved constraints in eligibility gates before ranking.
 
@@ -183,7 +183,7 @@ Source: https://composio.dev/toolkits/jev
 
 Fetch content with available host search/ATS/browser tools. Treat alerts as discovery leads and verify exact facts on employer pages. Avoid forwarding personal forms, full résumés or private inbox contents to a third party.
 
-`python3 scripts/evidence.py collect SOURCE.json` accepts `{text,url,...known_header_metadata}`. It strips basic HTML and the “Apply for this job” section, preserves salary candidates with exact excerpts and offsets, and hashes the extracted listing text. Location lines are hints only. Currency/period/geographic context must still be checked against the original. The regex supports common English-formatted currency ranges, not every language, number convention or pay format. A bare dollar sign leaves currency unknown; ambiguous decimal grouping, absent candidates, reversed ranges and overflow require original-source inspection. Never derive eligibility just from the collector output.
+`python3 scripts/evidence.py collect SOURCE.json` accepts `{text,url,...known_header_metadata}`. It strips basic HTML and the “Apply for this job” section, preserves salary candidates with exact excerpts and offsets, and hashes the extracted listing text. Location lines are hints only. Currency/period/geographic context must still be checked against the original. The regex supports common English-formatted currency ranges, not every language, number convention or pay format. A bare dollar sign leaves currency unknown; ambiguous decimal grouping, mixed `k`/plain endpoints such as `90–120k`, absent candidates, reversed ranges and overflow require original-source inspection. Never derive eligibility just from the collector output.
 
 Default mode: the host reviews evidence directly, without JEV. It selects supported facts, records quotations and uncertainty, and applies the same profile-specific gates.
 
