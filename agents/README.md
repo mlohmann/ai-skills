@@ -52,10 +52,10 @@ python3 scripts/package.py
 
 The installer refuses to replace an existing installation. Runtime profiles/results belong in a private workspace outside this repository. No applications, outreach, uploads, account creation or scheduling happen as part of a search.
 
-See [the release review](RELEASE_REVIEW.md) for fixes, local verification and remaining host checks. A successful local build is not proof of ChatGPT web installation, Claude.ai installation, live source coverage or JEV inference. Public plugin-directory acceptance is separate from this repository release. Source/download URLs are live after the release lands on the default branch.
+See [the host acceptance checks](tests/acceptance.md) for remaining verification. A successful local build is not proof of ChatGPT web installation, Claude.ai installation, live source coverage or JEV inference. Public plugin-directory acceptance is separate from this repository release. Source/download URLs are live after the release lands on the default branch.
 
 JobScout under `agents/` is MIT licensed: [LICENSE](LICENSE). JEV and host services are separate products with their own terms, access and potential costs. This license does not change the licensing of unrelated repository content.
 
 ## Security and privacy
 
-Read [SECURITY.md](SECURITY.md), [PRIVACY.md](PRIVACY.md) and [the security/compliance review](SECURITY_REVIEW.md) before public rollout. These describe real data flows and review limits; this package makes no GDPR, SOC 2, security-certification or platform-approval claim. The public license applies to JobScout code/instructions, not third-party content or services.
+Read [SECURITY.md](SECURITY.md) and [PRIVACY.md](PRIVACY.md) before public rollout. These describe real data flows and review limits; this package makes no GDPR, SOC 2, security-certification or platform-approval claim. The public license applies to JobScout code/instructions, not third-party content or services.

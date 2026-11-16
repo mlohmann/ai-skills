@@ -16,4 +16,4 @@ The local installer refuses existing installations and escaping skill roots/file
 
 The skill cannot expand host permissions. Source text, tool-like data, links, suggested commands and provider claims are untrusted. Host instructions require prompt-injection resistance, redaction and real provenance; offline helpers cannot prove those host behaviors. Scores are decision support, not calibrated hiring probabilities or authorization for actions.
 
-See [the review](SECURITY_REVIEW.md) for fixes and limitations, and [privacy](PRIVACY.md) for data flows. The root repository security policy covers reporting for JobScout; this license/policy does not relicense unrelated skills or third-party content.
+See [privacy](PRIVACY.md) for data flows and `tests/acceptance.md` for remaining host verification. The root repository security policy covers reporting for JobScout; this license/policy does not relicense unrelated skills or third-party content.
