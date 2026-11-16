@@ -121,6 +121,7 @@ def validate(p):
             or not source["name"].strip()
             or not isinstance(source.get("enabled", True), bool)
             or source.get("kind") not in ("aggregator", "board", "employer", "feed")
+            or source.get("access_mode", "manual") not in ("manual", "permitted")
         ):
             raise ValueError("Invalid source metadata")
     if "preferences" in p and (
@@ -153,7 +154,8 @@ def identity(j):
     if j.get("company") and j.get("requisition_id"):
         return norm(j["company"]) + "|id:" + norm(j["requisition_id"]), False
     try:
-        u = urlsplit(j.get("employer_url") or "")
+        url = j.get("employer_url")
+        u = urlsplit(url if isinstance(url, str) else "")
     except ValueError:
         u = urlsplit("")
     if (
@@ -188,6 +190,37 @@ def same_job(a, b):
     return not weak and x == y
 
 
+def evaluation_profile(p):
+    """Keep unexpected private fields out of external evaluation context."""
+    context = {
+        k: p[k]
+        for k in (
+            "target_roles",
+            "seniority",
+            "locations",
+            "work_models",
+            "candidate_evidence",
+            "preferences",
+        )
+        if k in p
+    }
+    context["criteria"] = [
+        {k: c[k] for k in ("id", "description", "weight")} for c in p["criteria"]
+    ]
+    context["salary"] = {
+        k: p["salary"][k]
+        for k in ("minimum", "currency", "period", "gate", "missing")
+        if k in p["salary"]
+    }
+    if "eligibility" in p:
+        context["eligibility"] = {
+            k: p["eligibility"][k]
+            for k in ("residence", "authorized_countries", "requires_sponsorship")
+            if k in p["eligibility"]
+        }
+    return context
+
+
 def request(p, j):
     validate(p)
     if not p["jev"].get("enabled", True):
@@ -220,25 +253,56 @@ def request(p, j):
                 + c["description"]
                 + " using job and candidate evidence only. Missing evidence is uncertainty.",
             }
+    if not isinstance(j, dict):
+        raise ValueError("Job must be an object")
+    # Public job facts only. URLs, forms, prior evaluations and raw metadata stay local.
+    job = {
+        k: j[k]
+        for k in (
+            "company",
+            "requisition_id",
+            "title",
+            "location",
+            "work_model",
+            "description",
+            "posted_at",
+            "evidence_excerpts",
+        )
+        if k in j
+    }
+    for key, value in job.items():
+        if key == "evidence_excerpts":
+            if not isinstance(value, list) or any(
+                not isinstance(v, str) for v in value
+            ):
+                raise ValueError("Evidence excerpts must be strings")
+        elif value is not None and not isinstance(value, str):
+            raise ValueError("Job context fields must be strings or null")
+    if isinstance(j.get("salary"), dict):
+        job["salary"] = {
+            k: j["salary"][k]
+            for k in ("min", "max", "currency", "period", "employer_reported")
+            if k in j["salary"]
+        }
+        pay = job["salary"]
+        if any(
+            pay.get(k) is not None and not num(pay[k], 0, 1e12) for k in ("min", "max")
+        ):
+            raise ValueError("Job salary amounts must be numeric or null")
+        if pay.get("currency") is not None and (
+            not isinstance(pay["currency"], str)
+            or not re.fullmatch("[A-Z]{3}", pay["currency"])
+        ):
+            raise ValueError("Invalid job salary currency")
+        if pay.get("period") not in (None, "year", "month", "week", "hour") or pay.get(
+            "employer_reported"
+        ) not in (None, True, False):
+            raise ValueError("Invalid job salary context")
     return {
         "model": p["jev"].get("model", "jev-latest"),
         "state": {
-            "profile": {
-                k: p[k]
-                for k in (
-                    "target_roles",
-                    "seniority",
-                    "locations",
-                    "work_models",
-                    "candidate_evidence",
-                    "criteria",
-                    "salary",
-                    "eligibility",
-                    "preferences",
-                )
-                if k in p
-            },
-            "job": j,
+            "profile": evaluation_profile(p),
+            "job": job,
         },
         "questions": qs,
     }
@@ -309,6 +373,8 @@ def rank(p, jobs, history=None, today=None):
                 review.append(gate + "_unknown")
         if j.get("employer_verified") is not True:
             review.append("employer_unverified")
+        if identity({"employer_url": j.get("employer_url")})[1]:
+            review.append("employer_url_invalid_or_missing")
         s = p["salary"]
         if s["minimum"] is not None:
             pay = j.get("salary") or {}

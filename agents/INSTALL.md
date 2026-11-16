@@ -29,7 +29,7 @@ python3 agents/scripts/install.py --host claude-code
 python3 agents/scripts/install.py --host codex
 ```
 
-Run only the command for the current host. Python 3.9+ is required. Claude Code installs under `~/.claude/skills/job-search-jev`; Codex under `~/.agents/skills/job-search-jev`. The installer never replaces an existing skill or writes a profile. If an installation exists, explain that an update needs review and preserve it. Start a new chat to discover the installed skill, then say “Configure JobScout.” The installer's `--skills-dir PATH` supports a user-selected project skill directory.
+Run only the command for the current host. Python 3.11+ is required. Claude Code installs under `~/.claude/skills/job-search-jev`; Codex under `~/.agents/skills/job-search-jev`. The installer never replaces an existing skill or writes a profile. If an installation exists, explain that an update needs review and preserve it. Start a new chat to discover the installed skill, then say “Configure JobScout.” The installer's `--skills-dir PATH` supports a user-selected project skill directory.
 
 Do not run shell commands in a host without terminal support, write to shared locations without authorization, or claim installation succeeded without checking the destination's `SKILL.md`.
 
@@ -48,3 +48,7 @@ Portable fallback: create a private ChatGPT Project, paste `chatgpt/instructions
 Let the user answer conversationally or use `skills/job-search-jev/assets/profile-form.md`. Export the private profile separately from public skill files. Offer starter sources, an empty source board, or their own URLs; copy the selected `sources` array into their profile. Offer a private Markdown/CSV listings board. Assistant review is the default; connect JEV only after the user opts in and authenticates independently.
 
 Before calling setup complete, confirm the skill/instructions can be read, the user has a private profile, and the selected source board and evaluator are clear. If live browsing is unavailable, explain that supplied listings can still be screened. Installation does not itself establish live source coverage or JEV connectivity.
+
+## Security and source access
+
+Review [SECURITY.md](SECURITY.md) and [PRIVACY.md](PRIVACY.md). All starter sources are manual links, even when enabled. Do not automate LinkedIn/Indeed pages or signed-in sessions; use provider-permitted methods or independently supplied employer links. Keep personal profiles outside installed/shared files. Before optional JEV use, explain the external data transfer and review allowed free-text fields for confidential data. Archive checksums are integrity checks, not publisher signatures.
