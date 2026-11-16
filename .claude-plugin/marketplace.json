@@ -1,0 +1,14 @@
+{
+  "name": "ai-skills",
+  "owner": {
+    "name": "Matthew Lohmann"
+  },
+  "plugins": [
+    {
+      "name": "jobscout",
+      "source": "./agents",
+      "description": "Job discovery with your profile, custom sources and optional JEV"
+    }
+  ],
+  "description": "Portable AI skills, including JobScout job search"
+}

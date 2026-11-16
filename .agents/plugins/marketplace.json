@@ -1,0 +1,22 @@
+{
+  "name": "ai-skills",
+  "interface": {
+    "displayName": "AI Skills"
+  },
+  "plugins": [
+    {
+      "name": "jobscout",
+      "source": {
+        "source": "local",
+        "path": "./agents"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity",
+      "interface": {
+        "displayName": "JobScout"
+      }
+    }
+  ]
+}
