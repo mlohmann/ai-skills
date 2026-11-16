@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "jobscout",
+  "version": "0.1.0",
+  "description": "Configurable job search and ranking with JEV"
+}

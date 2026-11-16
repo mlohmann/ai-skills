@@ -1,0 +1,11 @@
+# JEV-assisted evidence extraction
+
+Use host search/ATS/browser/email tools to fetch content. JEV does not browse or return free-form extracted JSON. Keep email bodies private and use them as discovery leads; verify exact facts on official employer listings. Avoid sending whole inboxes or personal application forms to JEV.
+
+Use `scripts/evidence.py collect SOURCE.json` to collect verbatim salary candidates and location spans from fetched text/HTML. SOURCE contains text, source URL and known listing identity/header metadata. The collector preserves exact amounts, offsets, excerpts and a content hash. It does not establish eligibility. Unsupported formats remain unknown; inspect an original source when candidates are absent or overflow.
+
+Use `request EVIDENCE.json PROFILE.json` to generate Choice questions selecting an existing salary evidence ID and classifying role scope, seniority and location. Execute with the live connected JEV tool. Use `resolve EVIDENCE.json RESPONSE_DATA.json` for the actual answers payload, not a mocked estimate. Preserve raw request/response and source. Currency missing from the exact candidate remains unverified. JEV confidence below the configured threshold stays review; model agreement is not factual proof.
+
+The host validates selected annual-base/currency/location context against the original evidence. Code performs exact numeric salary filtering and identity deduplication. Direct contradictory source evidence wins over semantic classification. Unknowns never become eligibility passes. Do not spend ranking calls on confirmed hard exclusions. Evaluate remaining review/eligible roles using the existing profile rubric.
+
+For measured runs, save start/end monotonic or wall timestamps, phase durations, tool counts/failures, sources attempted/completed/partial/blocked, message and listing counts, duplicate and exclusion reasons, exact live JEV usage per phase, and host-model token-counter deltas including cached input separately. Record setup and final reporting separately. Dollar costs unknown unless returned or calculated from verified provider billing. A/B runs use the same declared scope/window and disclose context/cache/order effects; do not describe tool response bytes as tokens.

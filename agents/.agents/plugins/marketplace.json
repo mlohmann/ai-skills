@@ -1,0 +1,20 @@
+{
+  "name": "jobscout-local",
+  "interface": {
+    "displayName": "JobScout Local"
+  },
+  "plugins": [
+    {
+      "name": "jobscout",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

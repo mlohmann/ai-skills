@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "target_roles": [],
+  "seniority": [],
+  "locations": [],
+  "work_models": [],
+  "salary": {
+    "minimum": null,
+    "currency": "USD",
+    "period": "year",
+    "gate": "lower_bound",
+    "missing": "review"
+  },
+  "excluded_companies": [],
+  "exclude_history_statuses": [
+    "applied",
+    "rejected"
+  ],
+  "criteria": [
+    {
+      "id": "role_fit",
+      "description": "Responsibilities match the user's target roles",
+      "weight": 3
+    },
+    {
+      "id": "skills_fit",
+      "description": "Requirements match the user's verified skills",
+      "weight": 3
+    },
+    {
+      "id": "preferences_fit",
+      "description": "Work aligns with the user's stated preferences",
+      "weight": 1
+    }
+  ],
+  "candidate_evidence": [],
+  "sources": [],
+  "top_n": 5,
+  "min_fit": 70,
+  "min_confidence": 0.85,
+  "jev": {
+    "required": true,
+    "model": "jev-latest",
+    "max_evaluations": 25
+  },
+  "max_age_days": null
+}
