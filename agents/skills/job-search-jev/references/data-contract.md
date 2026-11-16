@@ -99,4 +99,10 @@ Exclude a job only for a strong identity match whose status appears in `exclude_
 
 Each record contains identity, the original job, score, provider, and reason codes. The shortlist is a subset of qualified results. Do not count it twice.
 
-For conflicting duplicates, the helper keeps the first record and requests consolidation. The host must resolve the conflict. Save profiles, history, and outputs outside public release files.
+The helper processes records with explicit requisition IDs before URL-only records. Within one identity, it keeps the first primary record. It stores later different copies in `duplicate_jobs` for host review. Different explicit IDs remain separate, including when company metadata is missing.
+
+A URL-only record that matches multiple openings stays separate. It does not absorb those openings. If it has no confirmed exclusion, it stays in review with `ambiguous_identity`. Repeated copies of the unresolved record can still share one output record.
+
+Conflicting copies require consolidation. An existing company or application-history exclusion remains in force. Other exclusions remain only while their reason holds across all compared copies. If no exclusion remains, the record moves to review. A shared confirmed failure can therefore stay excluded, while an active-status conflict can move to review.
+
+The host must resolve the source conflict before it treats the job as qualified. Save profiles, history, and outputs outside public release files.

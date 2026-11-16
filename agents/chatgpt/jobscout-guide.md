@@ -161,7 +161,7 @@ The `lower_bound` policy requires the published band minimum to meet the user's 
 
 Use employer and requisition ID as the primary identity. Otherwise, use the canonical employer URL. A match based only on employer, title, and location is weak and requires review.
 
-Preserve meaningful URL parameters such as `jobId`. Remove known tracking parameters. Different explicit requisition IDs remain distinct. Compare only the current user's supplied or authorized application history. Consolidate duplicate evidence before ranking. Keep conflicts in review until resolved.
+Preserve meaningful URL parameters such as `jobId`. Remove known tracking parameters. Different explicit requisition IDs remain distinct. Compare only the current user's supplied or authorized application history. Keep explicit requisition identities separate. Keep a URL-only record separate if it can match multiple openings. Apply required filters before sending its unresolved identity to review. Preserve conflicting source copies for consolidation. Keep confirmed profile exclusions and failures shared by all copies; move other unresolved conflicts to review.
 
 If history is unavailable, report “history not checked.” Do not report “unapplied.” An empty checked history is different from missing history.
 
@@ -385,7 +385,13 @@ Exclude a job only for a strong identity match whose status appears in `exclude_
 
 Each record contains identity, the original job, score, provider, and reason codes. The shortlist is a subset of qualified results. Do not count it twice.
 
-For conflicting duplicates, the helper keeps the first record and requests consolidation. The host must resolve the conflict. Save profiles, history, and outputs outside public release files.
+The helper processes records with explicit requisition IDs before URL-only records. Within one identity, it keeps the first primary record. It stores later different copies in `duplicate_jobs` for host review. Different explicit IDs remain separate, including when company metadata is missing.
+
+A URL-only record that matches multiple openings stays separate. It does not absorb those openings. If it has no confirmed exclusion, it stays in review with `ambiguous_identity`. Repeated copies of the unresolved record can still share one output record.
+
+Conflicting copies require consolidation. An existing company or application-history exclusion remains in force. Other exclusions remain only while their reason holds across all compared copies. If no exclusion remains, the record moves to review. A shared confirmed failure can therefore stay excluded, while an active-status conflict can move to review.
+
+The host must resolve the source conflict before it treats the job as qualified. Save profiles, history, and outputs outside public release files.
 
 
 ---
