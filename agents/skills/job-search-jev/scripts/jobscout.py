@@ -314,6 +314,73 @@ def request(p, j):
     }
 
 
+def _filter_job(p, j, hist, history_checked, today):
+    """Check required filters without evaluating fit."""
+    _, weak = identity(j)
+    reject = []
+    review = []
+    if norm(j.get("company")) in {norm(x) for x in p["excluded_companies"]}:
+        reject.append("excluded_company")
+    if any(same_job(j, h) for h in hist):
+        reject.append("application_history")
+    if not history_checked:
+        review.append("history_not_checked")
+    if weak:
+        review.append("weak_identity")
+    if j.get("conflicts"):
+        review.append("evidence_conflict")
+    for gate in (
+        "role_eligible",
+        "seniority_eligible",
+        "location_eligible",
+        "work_model_eligible",
+        "active",
+    ):
+        if j.get(gate) is False:
+            reject.append(gate + "_false")
+        elif j.get(gate) is not True:
+            review.append(gate + "_unknown")
+    if j.get("employer_verified") is not True:
+        review.append("employer_unverified")
+    if identity({"employer_url": j.get("employer_url")})[1]:
+        review.append("employer_url_invalid_or_missing")
+    s = p["salary"]
+    if s.get("minimum") is not None:
+        pay = j.get("salary") or {}
+        if not isinstance(pay, dict):
+            pay = {}
+        bound = pay.get("min" if s["gate"] == "lower_bound" else "max")
+        valid = (
+            pay.get("employer_reported") is True
+            and pay.get("currency") == s["currency"]
+            and pay.get("period") == s["period"]
+            and num(bound, 0, 1e12)
+        )
+        if pay.get("min") is not None and pay.get("max") is not None:
+            valid = (
+                valid
+                and num(pay["min"], 0, 1e12)
+                and num(pay["max"], 0, 1e12)
+                and pay["min"] <= pay["max"]
+            )
+        if not valid:
+            (reject if s["missing"] == "exclude" else review).append(
+                "salary_unverified"
+            )
+        elif bound < s["minimum"]:
+            reject.append("salary_below_floor")
+    if p.get("max_age_days") is not None:
+        try:
+            age = (today - date.fromisoformat(j["posted_at"][:10])).days
+            if age < 0:
+                review.append("posting_date_future")
+            elif age > p["max_age_days"]:
+                reject.append("posting_stale")
+        except (KeyError, TypeError, ValueError):
+            review.append("posting_date_unknown")
+    return reject, review
+
+
 def rank(p, jobs, history=None, today=None):
     validate(p)
     if not isinstance(jobs, list) or any(not isinstance(j, dict) for j in jobs):
@@ -334,87 +401,57 @@ def rank(p, jobs, history=None, today=None):
         if not identity(h)[1]
         and norm(h.get("status")) in {norm(x) for x in p["exclude_history_statuses"]}
     ]
-    seen = {}
-    for j in jobs:
+    seen = []
+    # Establish explicit requisitions before matching URL-only records.
+    for j in sorted(jobs, key=lambda job: not bool(job.get("requisition_id"))):
         key, weak = identity(j)
-        duplicate = next(
-            (r for r in seen.values() if r["identity"] == key or same_job(j, r["job"])),
-            None,
-        )
-        if duplicate:
+        reject, review = _filter_job(p, j, hist, history is not None, today)
+        matches = [
+            r
+            for r in seen
+            if same_job(j, r["job"])
+            or (weak and identity(r["job"])[1] and r["identity"] == key)
+        ]
+        exact = [
+            r
+            for r in matches
+            if r["identity"] == key
+            and norm(r["job"].get("requisition_id")) == norm(j.get("requisition_id"))
+        ]
+        if exact:
+            matches = exact
+        if len(matches) == 1:
             out["duplicate_count"] += 1
-            r = duplicate
+            r = matches[0]
             if j != r["job"]:
-                r["reasons"].append("duplicate_evidence_requires_consolidation")
-                for b in ("qualified", "below_threshold"):
-                    if r in out[b]:
-                        out[b].remove(r)
-                if r not in out["excluded"] and r not in out["review"]:
+                copies = r.setdefault("duplicate_jobs", [])
+                if j not in copies:
+                    copies.append(j)
+                conflict = "duplicate_evidence_requires_consolidation"
+                if conflict not in r["reasons"]:
+                    r["reasons"].append(conflict)
+                if r in out["excluded"]:
+                    # Keep policy exclusions and source failures shared by all copies.
+                    remaining = [
+                        reason
+                        for reason in r["reasons"]
+                        if reason in reject
+                        or reason in ("excluded_company", "application_history")
+                    ]
+                    r["reasons"] = remaining + [conflict]
+                    if remaining:
+                        continue
+                    out["excluded"].remove(r)
+                for bucket in ("qualified", "below_threshold"):
+                    if r in out[bucket]:
+                        out[bucket].remove(r)
+                if r not in out["review"]:
                     out["review"].append(r)
             continue
+        if len(matches) > 1:
+            review.append("ambiguous_identity")
         r = {"identity": key, "job": j, "score": None, "provider": None, "reasons": []}
-        seen[key] = r
-        reject = []
-        review = []
-        if norm(j.get("company")) in {norm(x) for x in p["excluded_companies"]}:
-            reject.append("excluded_company")
-        if any(same_job(j, h) for h in hist):
-            reject.append("application_history")
-        if history is None:
-            review.append("history_not_checked")
-        if weak:
-            review.append("weak_identity")
-        if j.get("conflicts"):
-            review.append("evidence_conflict")
-        for gate in (
-            "role_eligible",
-            "seniority_eligible",
-            "location_eligible",
-            "work_model_eligible",
-            "active",
-        ):
-            if j.get(gate) is False:
-                reject.append(gate + "_false")
-            elif j.get(gate) is not True:
-                review.append(gate + "_unknown")
-        if j.get("employer_verified") is not True:
-            review.append("employer_unverified")
-        if identity({"employer_url": j.get("employer_url")})[1]:
-            review.append("employer_url_invalid_or_missing")
-        s = p["salary"]
-        if s.get("minimum") is not None:
-            pay = j.get("salary") or {}
-            if not isinstance(pay, dict):
-                pay = {}
-            bound = pay.get("min" if s["gate"] == "lower_bound" else "max")
-            valid = (
-                pay.get("employer_reported") is True
-                and pay.get("currency") == s["currency"]
-                and pay.get("period") == s["period"]
-                and num(bound, 0, 1e12)
-            )
-            if pay.get("min") is not None and pay.get("max") is not None:
-                valid = (
-                    valid
-                    and num(pay["min"], 0, 1e12)
-                    and num(pay["max"], 0, 1e12)
-                    and pay["min"] <= pay["max"]
-                )
-            if not valid:
-                (reject if s["missing"] == "exclude" else review).append(
-                    "salary_unverified"
-                )
-            elif bound < s["minimum"]:
-                reject.append("salary_below_floor")
-        if p.get("max_age_days") is not None:
-            try:
-                age = (today - date.fromisoformat(j["posted_at"][:10])).days
-                if age < 0:
-                    review.append("posting_date_future")
-                elif age > p["max_age_days"]:
-                    reject.append("posting_stale")
-            except (KeyError, TypeError, ValueError):
-                review.append("posting_date_unknown")
+        seen.append(r)
         if reject:
             r["reasons"] = reject
             out["excluded"].append(r)

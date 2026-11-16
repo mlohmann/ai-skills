@@ -57,7 +57,7 @@ The `lower_bound` policy requires the published band minimum to meet the user's 
 
 Use employer and requisition ID as the primary identity. Otherwise, use the canonical employer URL. A match based only on employer, title, and location is weak and requires review.
 
-Preserve meaningful URL parameters such as `jobId`. Remove known tracking parameters. Different explicit requisition IDs remain distinct. Compare only the current user's supplied or authorized application history. Consolidate duplicate evidence before ranking. Keep conflicts in review until resolved.
+Preserve meaningful URL parameters such as `jobId`. Remove known tracking parameters. Different explicit requisition IDs remain distinct. Compare only the current user's supplied or authorized application history. Keep explicit requisition identities separate. Keep a URL-only record separate if it can match multiple openings. Apply required filters before sending its unresolved identity to review. Preserve conflicting source copies for consolidation. Keep confirmed profile exclusions and failures shared by all copies; move other unresolved conflicts to review.
 
 If history is unavailable, report “history not checked.” Do not report “unapplied.” An empty checked history is different from missing history.
 
