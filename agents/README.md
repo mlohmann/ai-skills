@@ -50,11 +50,11 @@ Assistant review works without JEV. To use JEV, connect your own supported servi
 
 ## Downloads
 
-Choose a package in [releases/0.2.0](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.0):
+Choose a package in [releases/0.2.1](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.1):
 
 | File | Use |
 | --- | --- |
-| `jobscout-0.2.0-source.zip` | Source files, setup guides, templates, and tests |
+| `jobscout-0.2.1-source.zip` | Source files, setup guides, templates, and tests |
 | `jobscout-chatgpt-plugin.zip` | Portable Agent Plugin for supported hosts |
 | `job-search-jev-claude.zip` | Skill upload for Claude.ai |
 | `jobscout-claude-code-plugin.zip` | Plugin folder for Claude Code |
@@ -85,3 +85,11 @@ Read [the privacy guide](PRIVACY.md), [the security policy](SECURITY.md), and [t
 JEV off does not mean local-only AI processing. ChatGPT, Claude, and connected services use their own data settings and terms. JobScout does not apply for jobs, send messages, upload résumés, create accounts, or schedule searches as part of a scan.
 
 JobScout under `agents/` uses the [MIT license](LICENSE). This license covers JobScout code and instructions. It doesn't grant rights to third-party content, brands, or services, or change the license of unrelated repository content. This package makes no regulatory certification or platform-approval claim.
+
+### Optional application tracking
+
+During setup, JobScout can offer read-only Gmail or Outlook access and a
+Google Sheets or Excel tracker when your host supports the selected connection.
+Choose the mail scope and workbook tab, then preview status changes before
+enabling writes. You can also track applications manually.
+See the [setup workflow](skills/job-search-jev/assets/profile-form.md#application-tracking).
