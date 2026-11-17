@@ -60,7 +60,8 @@ of JEV requests and shared files.
   listing URL. Send company-only matches, duplicate rows, and conflicting or
   out-of-order changes to review. Use Interview requested for an invitation
   and Interview scheduled only when a time is confirmed. An unseen message
-  alone does not justify a status change.
+  alone does not justify a status change. When the profile excludes applied
+  jobs, interview and offer statuses also exclude the exact requisition.
 - **Writes.** Require explicit authorization for the chosen workbook, tab,
   and write mode. Check the current row again before editing. Update only
   approved fields. If the host cannot ensure that the same row still matches

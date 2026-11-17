@@ -3,7 +3,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(root / "skills/job-search-jev/scripts"))
-from jobscout import rank, request, validate
+from jobscout import cache_key, rank, request, validate
 
 
 class Tests(unittest.TestCase):
@@ -41,6 +41,23 @@ class Tests(unittest.TestCase):
         payload = request(self.p, self.j)
         self.assertEqual(payload["questions"]["skills_fit"]["type"], "score")
         self.assertEqual(len(payload["questions"]["skills_fit"]["criteria"]), 5)
+
+    def test_cache_key_ignores_object_order_but_detects_evidence_changes(self):
+        self.p["jev"]["model"] = "jev-1.14.0"
+        payload = request(self.p, self.j)
+        reordered = json.loads(json.dumps(payload, sort_keys=True))
+        self.assertEqual(cache_key(payload), cache_key(reordered))
+        reordered["state"]["job"]["description"] = "New employer evidence"
+        self.assertNotEqual(cache_key(payload), cache_key(reordered))
+
+    def test_post_application_tracker_statuses_preserve_exclusion(self):
+        for status in ("Interview requested", "Interview scheduled", "Offer"):
+            with self.subTest(status=status):
+                history = [{"company": "Example", "requisition_id": "1", "status": status}]
+                self.assertEqual(len(self.runjob(h=history)["excluded"]), 1)
+                self.assertEqual(len(self.runjob(h=[dict(history[0], requisition_id="2")])["shortlist"]), 1)
+        self.p["exclude_history_statuses"] = ["rejected"]
+        self.assertEqual(len(self.runjob(h=history)["shortlist"]), 1)
 
     def test_salary_boundaries(self):
         self.p["salary"]["minimum"] = 160000

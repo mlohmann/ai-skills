@@ -128,7 +128,8 @@ of JEV requests and shared files.
   listing URL. Send company-only matches, duplicate rows, and conflicting or
   out-of-order changes to review. Use Interview requested for an invitation
   and Interview scheduled only when a time is confirmed. An unseen message
-  alone does not justify a status change.
+  alone does not justify a status change. When the profile excludes applied
+  jobs, interview and offer statuses also exclude the exact requisition.
 - **Writes.** Require explicit authorization for the chosen workbook, tab,
   and write mode. Check the current row again before editing. Update only
   approved fields. If the host cannot ensure that the same row still matches
@@ -426,7 +427,7 @@ Request generation includes only allowed profile and job facts. It omits source 
 
 An empty array means the user checked the history and found no records. Omitted or null history means not checked. Missing history keeps results in review.
 
-Exclude a job only for a strong identity match whose status appears in `exclude_history_statuses`. Different explicit requisition IDs remain distinct. Keep meaningful URL parameters when you compare records.
+Exclude a job only for a strong identity match whose status appears in `exclude_history_statuses`. If that list includes `applied`, Interview requested, Interview scheduled, and Offer also count as applied. Different explicit requisition IDs remain distinct. Keep meaningful URL parameters when you compare records.
 
 ## Output
 
