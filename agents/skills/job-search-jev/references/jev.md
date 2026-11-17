@@ -41,3 +41,34 @@ Confirm score indexing and the returned legend. Preserve raw answers, model name
 Role Choice can guide review. A hard exclusion still requires source evidence. See [the workflow](workflow.md#evaluation) for fallback and call-budget rules.
 
 Recorded integration source: [Composio JEV toolkit](https://composio.dev/toolkits/jev).
+
+## Reduce repeated work
+
+Use a concise candidate evidence summary with the qualifications and limits that
+affect fit. Omit contact information and the full résumé. Keep the original
+posting and excerpts in private storage. Combine independent questions that use
+the same evidence into one request when no hard gate depends on the answers.
+When extraction can settle a hard gate, check it before asking for fit scores.
+
+For each eligible or review-stage listing, check the current user's private
+evaluation cache before calling JEV. After resolving the active model alias,
+use the concrete version in the request and run
+`jobscout.py cache-key REQUEST.json`. Use the resulting key as the filename
+stem under `jev-cache/` in the private profile directory. Use this directory
+only when the host can keep it private. Store only validated, complete responses
+from actual successful JEV calls. Record the response model and timestamp.
+Before using a hit, check that the model matches and validate the answer names
+and values against the current request. Treat unreadable, invalid or missing
+entries as misses. If the active alias cannot be resolved, skip cache reuse.
+Leave the user's model selection and routing policy in place.
+
+Recheck employer status, exact filters and application history on each scan.
+Apply current thresholds to cached answers. Report cache hits separately from
+live calls and count only live calls in current JEV usage. Delete the cache when
+the user removes the candidate information that it was derived from.
+
+For comparisons, reuse a fixed set of employer evidence and manually reviewed
+outcomes. Compare single listings with small groups of listings using the same
+model and rubric. Record missing or mismatched answers, review dispositions,
+latency and provider tokens. Keep confidence thresholds until labeled examples
+support a change.

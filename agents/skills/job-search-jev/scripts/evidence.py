@@ -182,11 +182,12 @@ def extraction_request(e, profile):
             candidate["currency_conflict"], bool
         ):
             raise ValueError("Invalid evidence currency conflict")
-    options = {
-        c["id"]: "Applicable base-pay evidence for the supplied profile: "
-        + c["excerpt"]
-        for c in e["salary_candidates"][:8]
-    }
+    options = {}
+    for candidate in e["salary_candidates"][:8]:
+        key = candidate["id"]
+        if not re.fullmatch(r"pay_[0-9]+", key) or key in options:
+            raise ValueError("Invalid or duplicate salary evidence ID")
+        options[key] = "Select the salary candidate with this ID in listing.salary_candidates"
     options["unknown"] = (
         "No applicable base-pay candidate; currency, period, geography or pay type ambiguous"
     )
@@ -208,8 +209,11 @@ def extraction_request(e, profile):
         "unknown": "Insufficient or conflicting evidence",
     }
     listing = {
-        k: e[k] for k in ("text", "sha256", "location_spans", "overflow") if k in e
+        k: e[k] for k in ("text", "overflow") if k in e
     }
+    extra_locations = [span for span in e.get("location_spans", []) if span not in e["text"]]
+    if extra_locations:
+        listing["location_spans"] = list(dict.fromkeys(extra_locations))
     candidate_fields = (
         "id",
         "min",
