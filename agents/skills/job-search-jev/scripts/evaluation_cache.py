@@ -29,6 +29,10 @@ def use_cache(profile, job, directory, entry=None):
     # Build the request first so disabled profiles cannot read or write the cache.
     payload = request(profile, job)
     key = cache_key(payload)
+    if os.name != "posix" or not all(
+        hasattr(os, name) for name in ("getuid", "O_NOFOLLOW", "O_NONBLOCK")
+    ):
+        raise ValueError("Evaluation caching requires a POSIX host; skip caching on this system")
     directory = Path(directory)
     if not directory.exists():
         directory.mkdir(mode=0o700)
