@@ -27,6 +27,7 @@ SKILL_FILES = [
     "references/privacy.md",
     "scripts/evidence.py",
     "scripts/jobscout.py",
+    "scripts/evaluation_cache.py",
 ]
 SKILL_PREFIX = "skills/job-search-jev/"
 PUBLIC_FILES = [
@@ -52,6 +53,7 @@ PUBLIC_FILES = [
     "tests/test_security.py",
     "tests/test_regressions.py",
     "tests/test_duplicates.py",
+    "tests/test_evaluation_cache.py",
 ] + [SKILL_PREFIX + p for p in SKILL_FILES]
 
 
@@ -215,11 +217,11 @@ def build(dist=None):
     if guide.is_symlink() or not guide.resolve().is_relative_to(ROOT.resolve()):
         raise ValueError("Unsafe guide destination")
     atomic_write(guide, "\n".join(parts).encode("utf-8"))
-    if dist is None and not (ROOT / "releases/0.2.1").resolve().is_relative_to(
+    if dist is None and not (ROOT / "releases/0.2.2").resolve().is_relative_to(
         ROOT.resolve()
     ):
         raise ValueError("Unsafe release destination")
-    dist = Path(dist) if dist else ROOT / "releases/0.2.1"
+    dist = Path(dist) if dist else ROOT / "releases/0.2.2"
     dist.mkdir(parents=True, exist_ok=True)
     # Check all public files before writing a release archive.
     for relative in PUBLIC_FILES:
@@ -231,7 +233,7 @@ def build(dist=None):
         ):
             raise ValueError("Missing or unsafe public file: " + relative)
     packages = {
-        "jobscout-0.2.1-source.zip": [(p, "jobscout/" + p) for p in PUBLIC_FILES],
+        "jobscout-0.2.2-source.zip": [(p, "jobscout/" + p) for p in PUBLIC_FILES],
         "jobscout-chatgpt-plugin.zip": [
             ("plugin.json", "plugin.json"),
             ("LICENSE", "LICENSE"),

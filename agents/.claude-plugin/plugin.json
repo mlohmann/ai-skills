@@ -1,6 +1,6 @@
 {
   "name": "jobscout",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Find and verify jobs using your own profile and source board, with optional JEV evaluation",
   "license": "MIT",
   "author": {

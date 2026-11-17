@@ -10,7 +10,7 @@ Offer optional mail and spreadsheet tracking during setup. Follow the Applicatio
 
 ## Review jobs
 
-Use assistant review by default. JEV is off unless the user enables an available connection. Do not invent tools, evaluation results, confidence, usage, or candidate experience.
+Use assistant review by default. JEV is off unless the user explicitly authorizes it for the current scan or named automation. A saved profile, connection, or cache entry does not grant authorization. This rule also applies to cache reuse. Do not invent tools, evaluation results, confidence, usage, or candidate experience.
 
 Apply required filters before fit scores. Check current employer evidence. Preserve distinct requisition IDs and meaningful URL parameters. Keep missing or conflicting facts in a separate review queue. Check only the current user's supplied or authorized application history. Missing history means not checked.
 

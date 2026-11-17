@@ -6,7 +6,7 @@ Choose a plugin installation if your host supports it. You can also use a privat
 
 ## Plugin setup
 
-Use `releases/0.2.1/jobscout-chatgpt-plugin.zip` with your host's supported plugin installation steps. The ZIP contains a root `plugin.json` and the `skills/` folder.
+Use `releases/0.2.2/jobscout-chatgpt-plugin.zip` with your host's supported plugin installation steps. The ZIP contains a root `plugin.json` and the `skills/` folder.
 
 The repository catalog at `.agents/plugins/marketplace.json` points to `./agents`. The catalog inside `agents/` lets you register that folder directly. This plugin requires no MCP server or JEV account.
 

@@ -6,7 +6,7 @@ Use this policy to check supported releases, report a vulnerability, and underst
 
 ## Supported releases
 
-Version 0.2.1 is a release candidate. Use an up-to-date Python 3.11 or later for its helpers. Earlier Python versions are outside the supported security baseline. AI hosts and connected services have their own security policies.
+Version 0.2.2 is a release candidate. Use an up-to-date Python 3.11 or later for its helpers. Earlier Python versions are outside the supported security baseline. AI hosts and connected services have their own security policies.
 
 This source review does not certify the release or verify every hosted installation.
 

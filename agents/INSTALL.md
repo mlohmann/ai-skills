@@ -59,7 +59,7 @@ Start a new chat if the skill does not appear. Then ask your agent to configure 
 
 ## Claude.ai
 
-1. Download [the Claude skill ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.1/job-search-jev-claude.zip).
+1. Download [the Claude skill ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.2/job-search-jev-claude.zip).
 2. Enable code execution and file creation if your account requires it.
 3. Open Customize > Skills. Click the + button, then choose Create skill > Upload a skill.
 4. Upload the ZIP file and turn on the skill.
@@ -71,7 +71,7 @@ Menu names and availability depend on your account. If Skills aren't available, 
 
 ### Plugin setup
 
-If your host supports repository or local skill plugins, use [the ChatGPT plugin ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.1/jobscout-chatgpt-plugin.zip) or the repository catalog at `.agents/plugins/marketplace.json`. The catalog points to `./agents`.
+If your host supports repository or local skill plugins, use [the ChatGPT plugin ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.2/jobscout-chatgpt-plugin.zip) or the repository catalog at `.agents/plugins/marketplace.json`. The catalog points to `./agents`.
 
 Follow your host's supported installation steps. There is no universal ChatGPT web ZIP-import step. This package includes no MCP server. JEV is a separate optional connection. A public directory listing requires its own submission and approval.
 
