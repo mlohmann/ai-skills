@@ -6,7 +6,7 @@ Choose a plugin installation if your host supports it. You can also use a privat
 
 ## Plugin setup
 
-Use `releases/0.2.0/jobscout-chatgpt-plugin.zip` with your host's supported plugin installation steps. The ZIP contains a root `plugin.json` and the `skills/` folder.
+Use `releases/0.2.1/jobscout-chatgpt-plugin.zip` with your host's supported plugin installation steps. The ZIP contains a root `plugin.json` and the `skills/` folder.
 
 The repository catalog at `.agents/plugins/marketplace.json` points to `./agents`. The catalog inside `agents/` lets you register that folder directly. This plugin requires no MCP server or JEV account.
 
@@ -33,6 +33,14 @@ Search uses the tools available to your account. All starter sources are manual 
 The Python helpers are optional for chat use. JEV is also optional. It requires your own supported connection. A Project or plugin does not create that connection.
 
 This release uses plugin and Project setup paths. It does not depend on creating a custom GPT. Feature access and account migration notices can vary.
+
+### Optional application tracking
+
+During setup, JobScout can offer read-only Gmail or Outlook access and a
+Google Sheets or Excel tracker when your host supports the selected connection.
+Choose the mail scope and workbook tab, then preview status changes before
+enabling writes. You can also track applications manually.
+See the [setup workflow](../skills/job-search-jev/assets/profile-form.md#application-tracking).
 
 ## References
 

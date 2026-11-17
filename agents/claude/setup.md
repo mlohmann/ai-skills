@@ -6,7 +6,7 @@ Choose the setup method for your account or app. JEV is off by default.
 
 ## Claude.ai
 
-1. Download `releases/0.2.0/job-search-jev-claude.zip` from [the release folder](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.0).
+1. Download `releases/0.2.1/job-search-jev-claude.zip` from [the release folder](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.1).
 2. Enable code execution and file creation if your account requires it.
 3. Open Customize > Skills. Click the + button, then choose Create skill > Upload a skill.
 4. Upload the ZIP file and turn on the skill.
@@ -54,6 +54,14 @@ This method uses shared reference material. It does not install a native skill. 
 To use JEV, connect your own provider through a supported integration. Check which tools are available before you evaluate a listing. The package supplies no server URL, credentials, or access to the author's accounts. Keep credentials out of skill files.
 
 See [the installation guide](../INSTALL.md) for profile setup and source permissions.
+
+### Optional application tracking
+
+During setup, JobScout can offer read-only Gmail or Outlook access and a
+Google Sheets or Excel tracker when your host supports the selected connection.
+Choose the mail scope and workbook tab, then preview status changes before
+enabling writes. You can also track applications manually.
+See the [setup workflow](../skills/job-search-jev/assets/profile-form.md#application-tracking).
 
 ## References
 
