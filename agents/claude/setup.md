@@ -6,7 +6,7 @@ Choose the setup method for your account or app. JEV is off by default.
 
 ## Claude.ai
 
-1. Download `releases/0.2.1/job-search-jev-claude.zip` from [the release folder](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.1).
+1. Download `releases/0.2.2/job-search-jev-claude.zip` from [the release folder](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.2).
 2. Enable code execution and file creation if your account requires it.
 3. Open Customize > Skills. Click the + button, then choose Create skill > Upload a skill.
 4. Upload the ZIP file and turn on the skill.

@@ -147,7 +147,7 @@ def collect(source):
 
 def extraction_request(e, profile):
     validate(profile)
-    if not profile["jev"].get("enabled", True):
+    if not profile["jev"].get("enabled", False):
         raise ValueError("JEV is disabled")
     if (
         not isinstance(e, dict)

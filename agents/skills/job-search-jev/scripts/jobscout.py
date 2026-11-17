@@ -81,8 +81,8 @@ def validate(p):
         raise ValueError("Invalid salary policy")
     if not isinstance(p.get("jev"), dict):
         raise ValueError("Invalid JEV policy")
-    if not isinstance(p["jev"].get("enabled", True), bool) or (
-        p["jev"].get("required") and not p["jev"].get("enabled", True)
+    if not isinstance(p["jev"].get("enabled", False), bool) or (
+        p["jev"].get("required") and not p["jev"].get("enabled", False)
     ):
         raise ValueError("Required JEV must be enabled")
     if (
@@ -241,7 +241,7 @@ def cache_key(payload):
 
 def request(p, j):
     validate(p)
-    if not p["jev"].get("enabled", True):
+    if not p["jev"].get("enabled", False):
         raise ValueError(
             "JEV is disabled; enable it in your private profile to build a request"
         )
