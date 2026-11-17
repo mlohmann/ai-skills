@@ -81,7 +81,11 @@ not authorization by itself. Use a per-run profile with `enabled: true` only aft
 that authorization. Keep `required: false` for assistant fallback. Label fallback
 results as assistant review. Do not expand the pilot automatically.
 
-The local helper `scripts/evaluation_cache.py` does not call JEV. Use:
+The local helper `scripts/evaluation_cache.py` does not call JEV. It requires a
+POSIX host, such as macOS or Linux, with file ownership and permission checks.
+Windows is not supported. On unsupported systems, skip caching and use an
+authorized live evaluation or assistant review. Do not bypass permission checks.
+On a supported host, use:
 
 ```text
 python3 scripts/evaluation_cache.py PROFILE.json JOB.json PRIVATE_DIRECTORY

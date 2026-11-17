@@ -1,5 +1,6 @@
 import copy
 import json
+from unittest.mock import patch
 from pathlib import Path
 import sys
 import tempfile
@@ -90,3 +91,10 @@ class CacheTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     use_cache(self.profile, self.job, directory, entry)
             self.assertEqual(list(Path(directory).iterdir()), [])
+
+    def test_unsupported_host_fails_before_cache_access(self):
+        with patch('evaluation_cache.os.name', 'nt'), patch('evaluation_cache.Path') as path:
+            for entry in (None, self.entry):
+                with self.assertRaisesRegex(ValueError, 'requires a POSIX host'):
+                    use_cache(self.profile, self.job, 'unused', entry)
+            path.assert_not_called()

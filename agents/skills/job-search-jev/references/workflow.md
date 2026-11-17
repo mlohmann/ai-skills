@@ -22,7 +22,7 @@ Use these JEV settings:
 | `enabled:true, required:false` | Use JEV when available. Disclose any assistant fallback. |
 | `enabled:true, required:true` | Keep jobs pending if JEV evaluation is unavailable. |
 
-Profiles without `enabled` retain their earlier JEV behavior. A required JEV configuration must also enable JEV. Do not change the owner's personal scan policy when you distribute this generic package.
+Profiles without `enabled` now keep JEV disabled. For an older profile, obtain explicit authorization for the current scan or named automation before setting `enabled:true` in its run profile. A saved profile does not grant authorization. If `required:true` is present without `enabled:true`, validation fails; use `required:false` for assistant review. A required JEV configuration must also enable JEV. Do not change the owner's personal scan policy when you distribute this generic package.
 
 ## Source retrieval
 
