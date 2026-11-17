@@ -1,5 +1,6 @@
 """Create JEV requests and rank supplied jobs. Do not make network requests."""
 
+import hashlib
 import json, sys, math, re
 from datetime import date
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
@@ -227,6 +228,15 @@ def evaluation_profile(p):
     return context
 
 
+def cache_key(payload):
+    """Identify an exact evaluation request for the current user's private cache."""
+    model = payload.get("model", "")
+    if not re.fullmatch(r"jev-[0-9]+(?:[.][0-9]+)+", model):
+        raise ValueError("Use a resolved JEV model version to cache an evaluation")
+    encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
 def request(p, j):
     validate(p)
     if not p["jev"].get("enabled", True):
@@ -284,6 +294,12 @@ def request(p, j):
                 raise ValueError("Evidence excerpts must be strings")
         elif value is not None and not isinstance(value, str):
             raise ValueError("Job context fields must be strings or null")
+    if "evidence_excerpts" in job:
+        description = job.get("description") or ""
+        excerpts = list(dict.fromkeys(job.pop("evidence_excerpts")))
+        extra = [excerpt for excerpt in excerpts if excerpt not in description]
+        if extra:
+            job["evidence_excerpts"] = extra
     if isinstance(j.get("salary"), dict):
         job["salary"] = {
             k: j["salary"][k]
@@ -510,13 +526,15 @@ if __name__ == "__main__":
         if mode == "validate" and len(args) == 1:
             validate(args[0])
             out = {"valid": True}
+        elif mode == "cache-key" and len(args) == 1:
+            out = {"key": cache_key(args[0])}
         elif mode == "request" and len(args) == 2:
             out = request(*args)
         elif mode == "rank" and len(args) in (2, 3):
             out = rank(*args)
         else:
             raise ValueError(
-                "Usage: validate PROFILE | request PROFILE JOB | rank PROFILE JOBS [HISTORY]"
+                "Usage: validate PROFILE | request PROFILE JOB | rank PROFILE JOBS [HISTORY] | cache-key REQUEST"
             )
         print(json.dumps(out, indent=2, allow_nan=False))
     except (OSError, ValueError, KeyError, TypeError, IndexError) as e:

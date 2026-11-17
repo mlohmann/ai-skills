@@ -59,7 +59,7 @@ Start a new chat if the skill does not appear. Then ask your agent to configure 
 
 ## Claude.ai
 
-1. Download [the Claude skill ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.0/job-search-jev-claude.zip).
+1. Download [the Claude skill ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.1/job-search-jev-claude.zip).
 2. Enable code execution and file creation if your account requires it.
 3. Open Customize > Skills. Click the + button, then choose Create skill > Upload a skill.
 4. Upload the ZIP file and turn on the skill.
@@ -71,7 +71,7 @@ Menu names and availability depend on your account. If Skills aren't available, 
 
 ### Plugin setup
 
-If your host supports repository or local skill plugins, use [the ChatGPT plugin ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.0/jobscout-chatgpt-plugin.zip) or the repository catalog at `.agents/plugins/marketplace.json`. The catalog points to `./agents`.
+If your host supports repository or local skill plugins, use [the ChatGPT plugin ZIP](https://github.com/mlohmann/ai-skills/raw/refs/heads/main/agents/releases/0.2.1/jobscout-chatgpt-plugin.zip) or the repository catalog at `.agents/plugins/marketplace.json`. The catalog points to `./agents`.
 
 Follow your host's supported installation steps. There is no universal ChatGPT web ZIP-import step. This package includes no MCP server. JEV is a separate optional connection. A public directory listing requires its own submission and approval.
 
@@ -106,3 +106,11 @@ Offer a starter source board, a blank board, or the user's own sources. Copy the
 All starter sources are manual links. Do not automate LinkedIn or Indeed pages or signed-in sessions. Use only a method that the provider permits. Before optional JEV use, explain the external data transfer and check allowed text for confidential information.
 
 Before you finish, confirm that the user has a private profile and understands the selected sources and evaluator. Read [privacy](PRIVACY.md) and [security](SECURITY.md) for data handling and package limits. Installation alone does not verify live source retrieval or JEV connectivity.
+
+### Optional application tracking
+
+During setup, JobScout can offer read-only Gmail or Outlook access and a
+Google Sheets or Excel tracker when your host supports the selected connection.
+Choose the mail scope and workbook tab, then preview status changes before
+enabling writes. You can also track applications manually.
+See the [setup workflow](skills/job-search-jev/assets/profile-form.md#application-tracking).

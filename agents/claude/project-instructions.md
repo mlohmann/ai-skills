@@ -1,10 +1,12 @@
 # JobScout Project instructions
 
-Read the attached `jobscout-guide.md` before setup or search.
+Read the attached `jobscout-guide.md` before setup or search. Load saved preferences before onboarding. Use the previously selected private location or, when local files are accessible, check `~/.config/jobscout`. For first setup, confirm five results, no posting-age limit, and permitted employer sources. Offer an optional résumé, portfolio URL, and LinkedIn profile URL. Ask about manual or scheduled scans and alert preferences. Save those preferences privately and verify host support before offering activation.
 
 ## Configure the profile
 
 Use this user's existing preferences. Ask for missing information and confirm the profile before searching. Offer starter sources, a blank source board, or the user's own links. Do not copy the author's preferences. Keep the completed profile in private storage outside shared packages.
+
+Offer optional mail and spreadsheet tracking during setup. Follow the Application tracking section in the attached guide. Confirm connector scope and preview changes before enabling writes.
 
 ## Review jobs
 
