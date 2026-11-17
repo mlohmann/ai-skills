@@ -233,7 +233,9 @@ def cache_key(payload):
     model = payload.get("model", "")
     if not re.fullmatch(r"jev-[0-9]+(?:[.][0-9]+)+", model):
         raise ValueError("Use a resolved JEV model version to cache an evaluation")
-    encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+    encoded = json.dumps(
+        payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False
+    )
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
 
 
@@ -411,11 +413,14 @@ def rank(p, jobs, history=None, today=None):
         for k in ("shortlist", "qualified", "review", "excluded", "below_threshold")
     }
     out.update(history_checked=history is not None, duplicate_count=0)
+    excluded_statuses = {norm(status) for status in p["exclude_history_statuses"]}
+    if "applied" in excluded_statuses:
+        excluded_statuses.update({"interview requested", "interview scheduled", "offer"})
     hist = [
         h
         for h in history or []
         if not identity(h)[1]
-        and norm(h.get("status")) in {norm(x) for x in p["exclude_history_statuses"]}
+        and norm(h.get("status")) in excluded_statuses
     ]
     seen = []
     # Establish explicit requisitions before matching URL-only records.
