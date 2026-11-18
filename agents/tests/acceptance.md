@@ -1,6 +1,6 @@
 # Host acceptance checks
 
-Run these checks separately from the Python suite. Record the host, package version, account restrictions, actions performed, and observed results.
+See the [installation check record](installation-checks.md) for completed installation checks and their limits. Run the remaining checks separately from the Python suite. Record the host, package version, account restrictions, actions performed, and observed results.
 
 [Installation](#installation) · [Profile and sources](#profile-and-sources) · [Evaluation](#evaluation) · [Security and storage](#security-and-storage)
 

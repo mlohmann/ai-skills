@@ -1,6 +1,6 @@
 # Install JobScout
 
-Use the section for your AI host. The release must be merged into the default branch before the public installation links work.
+Use the section for your AI host. The [installation check record](tests/installation-checks.md) distinguishes tested installation routes from account-specific setup that remains unverified.
 
 [Start in chat](#start-in-chat) · [Claude Code](#claude-code) · [Local skill installer](#local-skill-installer) · [Claude.ai](#claudeai) · [ChatGPT](#chatgpt) · [Agent checks](#agent-checks) · [Profile setup](#profile-setup)
 
@@ -14,13 +14,13 @@ Your agent can guide setup. It can't grant new tools, bypass workspace policies,
 
 ## Claude Code
 
-For Claude Code 2.1.275 or later, run:
+The command below was verified with Claude Code 2.1.326 and JobScout 0.2.2 on macOS. Your client must support the `--marketplace` option. Run:
 
 ```sh
 claude plugin install jobscout --marketplace mlohmann/ai-skills
 ```
 
-Inside a Claude Code chat, use `/plugin install jobscout --marketplace mlohmann/ai-skills`. This command adds the repository marketplace and installs JobScout. In a new chat, ask Claude to configure JobScout.
+The shell command adds the repository marketplace and installs JobScout. Check `claude plugin list`, then start a new chat and ask Claude to configure JobScout. Inside a chat, use the host's `/plugin` interface; the check record covers the shell command only.
 
 If your client doesn't support this option, update it or use the local skill installer. Choose one installation method to avoid duplicate skills.
 
