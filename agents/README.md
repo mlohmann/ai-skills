@@ -1,5 +1,7 @@
 # JobScout
 
+[![JobScout CI](https://github.com/mlohmann/ai-skills/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/mlohmann/ai-skills/actions/workflows/ci.yml)
+
 Find jobs with a search profile you control. JobScout brings profile setup, job sources, and results to ChatGPT and Claude. You can use it for any occupation. JEV, an optional evaluation service, is off by default.
 
 [Get started](#get-started) · [Set up your search](#set-up-your-search) · [Downloads](#downloads) · [Build and test](#build-and-test) · [Privacy and security](#privacy-and-security)
