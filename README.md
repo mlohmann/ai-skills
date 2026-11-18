@@ -1,28 +1,71 @@
-# ai-skills
+# AI skills, starting with JobScout
 
-Personal, portable AI skills and agent definitions.
+JobScout helps people review job opportunities against their own experience and search criteria. It combines reusable instructions for AI assistants with Python helpers that check required filters, prepare evaluation requests, and rank supplied listings.
 
-This repository is intentionally small at the start: each skill should capture a proven, repeatable workflow rather than a generic prompt. Agent definitions compose those skills for a specific role or task.
+The goal is to make a job search easier to inspect: show why a role qualifies, keep missing facts visible, and separate verified evidence from assistant judgment.
 
-## Structure
+[Install JobScout](agents/INSTALL.md) · [How it works](#how-jobscout-works) · [Verification](#verification) · [Other skills](#other-skills)
 
-```text
-skills/       Reusable capabilities; each skill lives in its own folder with SKILL.md
-agents/       Role-specific instructions that can reference one or more skills
-templates/    Starting points for new skills and agents
-references/   Shared, durable context that more than one skill needs
-evals/        Small, repeatable checks for skills or agents
+## Try JobScout
+
+For Claude Code clients that support the `--marketplace` option:
+
+```sh
+claude plugin install jobscout --marketplace mlohmann/ai-skills
 ```
 
-## Start here
+Start a new chat and ask to configure JobScout. Keep your profile outside the repository. JEV is optional and stays off unless you explicitly authorize it.
 
-1. Copy `templates/skill/SKILL.md` into `skills/<skill-name>/SKILL.md`.
-2. Replace every bracketed prompt with concise, task-specific guidance.
-3. Add an agent only when a reusable role genuinely needs to compose multiple skills.
-4. Add a focused evaluation case before relying on a skill for consequential work.
+Prefer another setup? See the [installation guide](agents/INSTALL.md) for the local skill installer, Claude.ai, and ChatGPT Projects. The [installation check record](agents/tests/installation-checks.md) states which routes have been tested.
 
-Keep credentials, private source material, and user-specific secrets out of the repository. Use local environment configuration for those values.
+## How JobScout works
 
-## JobScout
+1. Load your private search profile and application history.
+2. Review supplied employer listings or retrieve evidence through permitted sources. Starter job-board entries are manual links.
+3. Check salary, location, seniority, freshness, and application history before ranking fit.
+4. Put missing or conflicting facts in a review queue. Keep assistant assessments separate from optional JEV results.
+5. Save results to a private board. A scan does not submit applications or send messages.
 
-[JobScout](agents/README.md) helps you review jobs in ChatGPT and Claude. Create a private profile, choose sources, and save matches in a results board. JEV evaluation is optional. Start with [the installation guide](agents/INSTALL.md). JobScout uses the MIT license in `agents/LICENSE`.
+### Example: required filters come first
+
+These synthetic examples illustrate the ranking helper's behavior. They are not real vacancies or search results.
+
+| Listing evidence | Fit score | Result |
+| --- | --- | --- |
+| Required filters pass and history is checked | 80 | Qualified when the minimum fit is 70 |
+| Location eligibility is unknown | 80 | Review |
+| Application history records an application | 80 | Excluded |
+
+A fit score is a rubric-based assessment, not a hiring probability.
+
+## Engineering decisions
+
+- **Keep deterministic checks in code.** Python validates inputs, applies required filters, matches listing identities, and calculates weighted scores. The host supplies evidence and assessments.
+- **Make uncertainty visible.** Missing history, conflicting copies, unsupported scores, and unknown eligibility keep results in review.
+- **Separate authorization from configuration.** Host instructions require explicit JEV authorization for a scan or named automation. The offline helpers also block request generation when JEV is disabled.
+- **Reuse only matching evaluations.** The optional POSIX cache matches the exact request and concrete model version. Current listing status and application history still need a fresh check.
+- **Keep packages reproducible.** An explicit public-file list, fixed archive metadata, and checksum tests help keep releases consistent and private files out.
+
+The helpers use the Python standard library. They do not browse job boards or call JEV. Host instructions are not a security sandbox; read the [privacy](agents/PRIVACY.md) and [security](agents/SECURITY.md) limits.
+
+## Verification
+
+From the repository root, run:
+
+```sh
+python3 -m unittest discover -s agents/tests -v
+python3 agents/scripts/package.py
+```
+
+Tests cover filtering, application history, duplicate evidence, input validation, JEV opt-in, cache validation, installation, and reproducible packages. See the [installation check record](agents/tests/installation-checks.md) for observed results and the [host acceptance checklist](agents/tests/acceptance.md) for checks that remain separate from Python tests.
+
+The repository includes source and release packages for ChatGPT-compatible hosts, Claude.ai, and Claude Code. Hosted conversations, live source retrieval, and authenticated JEV inference have not been verified by the installation checks.
+
+## Other skills
+
+- [Software Engineering Application Review](skills/software-engineering-application-review/SKILL.md): audit a résumé against a role before tailoring it.
+- [Software Engineering Career Review](skills/software-engineering-career-review/SKILL.md): assess candidacy, evidence gaps, and preparation priorities.
+
+Reusable skills live in `skills/`. JobScout lives in `agents/`. The `templates/`, `references/`, and `evals/` folders support new workflows.
+
+JobScout uses the [MIT license](agents/LICENSE). That license applies to JobScout code and instructions; it does not grant rights to third-party services or job-board content.

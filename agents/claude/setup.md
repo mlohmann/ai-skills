@@ -16,13 +16,13 @@ The ZIP contains one `job-search-jev/` folder with `SKILL.md` and its supporting
 
 ## Claude Code
 
-For Claude Code 2.1.275 or later, run this command after the release is merged:
+The following shell command was verified with Claude Code 2.1.326 and JobScout 0.2.2 on macOS. Your client must support the `--marketplace` option:
 
 ```sh
 claude plugin install jobscout --marketplace mlohmann/ai-skills
 ```
 
-The repository catalog at `.claude-plugin/marketplace.json` points to `./agents`. In a new chat, ask Claude to configure JobScout.
+The repository catalog at `.claude-plugin/marketplace.json` points to `./agents`. Run `claude plugin list` to check installation. In a new chat, ask Claude to configure JobScout. See the [installation check record](../tests/installation-checks.md) for the tested scope.
 
 To install a standalone skill instead, run this command from the cloned repository root:
 
