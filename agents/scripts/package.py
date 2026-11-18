@@ -48,6 +48,7 @@ PUBLIC_FILES = [
     "tests/test_jobscout.py",
     "tests/test_release.py",
     "tests/acceptance.md",
+    "tests/installation-checks.md",
     "SECURITY.md",
     "PRIVACY.md",
     "tests/test_security.py",

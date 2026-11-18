@@ -10,13 +10,13 @@ Paste this instruction into your AI agent:
 
 > Read https://raw.githubusercontent.com/mlohmann/ai-skills/main/agents/INSTALL.md and install JobScout for this environment. Help me create my private profile and choose a starter source board or my own sources. Leave JEV off unless I opt in.
 
-For Claude Code 2.1.275 or later, you can also use this command:
+For Claude Code clients that support the `--marketplace` option, use:
 
 ```sh
 claude plugin install jobscout --marketplace mlohmann/ai-skills
 ```
 
-These links and the marketplace command work after the release is merged into the default branch. Your host might require you to upload files or complete other setup steps.
+The marketplace command was verified with Claude Code 2.1.326 and JobScout 0.2.2 on macOS. See the [installation check record](tests/installation-checks.md) for the tested scope. Other hosts might require you to upload files or complete account-specific steps.
 
 Choose the guide for your host:
 
