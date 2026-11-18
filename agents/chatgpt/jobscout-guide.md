@@ -54,7 +54,7 @@ Use only retrieval methods that the source provider permits. Do not fetch manual
 
 Use **assistant review** by default. Apply required filters before fit scores. Keep missing or conflicting evidence in review.
 
-Only after JEV opt-in, read [JEV integration](https://github.com/mlohmann/ai-skills/blob/main/agents/skills/job-search-jev/references/jev.md) and [evidence extraction](https://github.com/mlohmann/ai-skills/blob/main/agents/skills/job-search-jev/references/extraction.md). Do not connect, call, or report JEV usage when it is disabled. Keep actual provider results separate from assistant judgment.
+Require explicit JEV authorization for the current scan or named automation. A saved enabled flag or cache entry does not grant authorization. Do not connect, call JEV, or reuse cached JEV results without that authorization. Follow the opt-in cache workflow in `references/jev.md`. Only after JEV opt-in, read [JEV integration](https://github.com/mlohmann/ai-skills/blob/main/agents/skills/job-search-jev/references/jev.md) and [evidence extraction](https://github.com/mlohmann/ai-skills/blob/main/agents/skills/job-search-jev/references/extraction.md). Do not connect, call, or report JEV usage when it is disabled. Keep actual provider results separate from assistant judgment.
 
 ## Data boundaries
 
@@ -182,7 +182,7 @@ Use these JEV settings:
 | `enabled:true, required:false` | Use JEV when available. Disclose any assistant fallback. |
 | `enabled:true, required:true` | Keep jobs pending if JEV evaluation is unavailable. |
 
-Profiles without `enabled` retain their earlier JEV behavior. A required JEV configuration must also enable JEV. Do not change the owner's personal scan policy when you distribute this generic package.
+Profiles without `enabled` now keep JEV disabled. For an older profile, obtain explicit authorization for the current scan or named automation before setting `enabled:true` in its run profile. A saved profile does not grant authorization. If `required:true` is present without `enabled:true`, validation fails; use `required:false` for assistant review. A required JEV configuration must also enable JEV. Do not change the owner's personal scan policy when you distribute this generic package.
 
 ## Source retrieval
 
@@ -527,6 +527,58 @@ outcomes. Compare single listings with small groups of listings using the same
 model and rubric. Record missing or mismatched answers, review dispositions,
 latency and provider tokens. Keep confidence thresholds until labeled examples
 support a change.
+
+## Opt-in cache workflow
+
+Explicit user authorization for the current scan or named automation is required
+before request generation, a live call, or cache reuse. A saved enabled flag is
+not authorization by itself. Use a per-run profile with `enabled: true` only after
+that authorization. Keep `required: false` for assistant fallback. Label fallback
+results as assistant review. Do not expand the pilot automatically.
+
+The local helper `scripts/evaluation_cache.py` does not call JEV. It requires a
+POSIX host, such as macOS or Linux, with file ownership and permission checks.
+Windows is not supported. On unsupported systems, skip caching and use an
+authorized live evaluation or assistant review. Do not bypass permission checks.
+On a supported host, use:
+
+```text
+python3 scripts/evaluation_cache.py PROFILE.json JOB.json PRIVATE_DIRECTORY
+python3 scripts/evaluation_cache.py PROFILE.json JOB.json PRIVATE_DIRECTORY ENTRY.json
+```
+
+The first command returns `hit` or `miss`. The second stores a validated entry.
+Use a directory in private local storage, outside shared and synced folders.
+The directory must belong to the current user and have mode 0700. Files use
+mode 0600. These permissions do not provide encryption.
+
+ENTRY must contain `request` (the exact generated request), `model`, `evaluated_at` (an ISO timestamp with timezone),
+`raw_response` (the actual nonempty response object), and `evaluation`.
+The normalized evaluation must contain `provider: "jev"`, a documented
+`confidence` from 0 to 1, and `scores` from 0 to 100 for exactly the score
+question names. The host must first validate the actual provider response,
+including role_match and score indexing, against the live schema. The helper
+checks the normalized contract; it cannot authenticate provider provenance or
+establish that normalization is correct. Do not store incomplete, failed, or
+unsupported responses. Never invent confidence to make an entry valid.
+
+Use the returned entry's evaluation on the current job, then run `jobscout.py
+rank` with current history. Do not copy cached job status or history. Recheck
+employer status and hard gates on every scan. Changes to the exact generated
+request or concrete model version cause a miss. An unresolved model alias
+blocks cache use; it does not block an authorized live evaluation.
+
+Record pilot metrics in private run storage: listings checked, JEV candidates,
+cache hits, live calls, failures, assistant fallbacks, latency, and provider
+reported input tokens, cached tokens, output tokens, and cost. Use null when a
+measurement is unavailable. Reused evaluations are not new JEV usage. Do not
+claim a savings percentage until comparable runs supply measurements. Report
+results for user review before expansion. To roll back, keep JEV disabled and
+stop use of the helper. Delete derived cache files when candidate data is removed;
+local deletion does not delete provider copies.
+
+Provider retention, training use, processing regions, subprocessors, and deletion
+controls remain unverified. Do not present this pilot as regulatory certification.
 
 
 ---

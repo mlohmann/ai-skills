@@ -50,11 +50,11 @@ Assistant review works without JEV. To use JEV, connect your own supported servi
 
 ## Downloads
 
-Choose a package in [releases/0.2.1](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.1):
+Choose a package in [releases/0.2.2](https://github.com/mlohmann/ai-skills/tree/main/agents/releases/0.2.2):
 
 | File | Use |
 | --- | --- |
-| `jobscout-0.2.1-source.zip` | Source files, setup guides, templates, and tests |
+| `jobscout-0.2.2-source.zip` | Source files, setup guides, templates, and tests |
 | `jobscout-chatgpt-plugin.zip` | Portable Agent Plugin for supported hosts |
 | `job-search-jev-claude.zip` | Skill upload for Claude.ai |
 | `jobscout-claude-code-plugin.zip` | Plugin folder for Claude Code |

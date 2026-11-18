@@ -44,7 +44,7 @@ Use only retrieval methods that the source provider permits. Do not fetch manual
 
 Use **assistant review** by default. Apply required filters before fit scores. Keep missing or conflicting evidence in review.
 
-Only after JEV opt-in, read [JEV integration](references/jev.md) and [evidence extraction](references/extraction.md). Do not connect, call, or report JEV usage when it is disabled. Keep actual provider results separate from assistant judgment.
+Require explicit JEV authorization for the current scan or named automation. A saved enabled flag or cache entry does not grant authorization. Do not connect, call JEV, or reuse cached JEV results without that authorization. Follow the opt-in cache workflow in `references/jev.md`. Only after JEV opt-in, read [JEV integration](references/jev.md) and [evidence extraction](references/extraction.md). Do not connect, call, or report JEV usage when it is disabled. Keep actual provider results separate from assistant judgment.
 
 ## Data boundaries
 

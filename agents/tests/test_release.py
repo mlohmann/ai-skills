@@ -367,6 +367,9 @@ class ReleaseTests(unittest.TestCase):
                 self.assertEqual(before[name], (Path(tmp) / name).read_bytes())
                 with zipfile.ZipFile(Path(tmp) / name) as z:
                     paths = z.namelist()
+                    self.assertEqual(
+                        len([p for p in paths if p.endswith("scripts/evaluation_cache.py")]), 1
+                    )
                     self.assertTrue(
                         all(
                             "__pycache__" not in p
